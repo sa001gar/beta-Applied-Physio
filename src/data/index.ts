@@ -54,7 +54,7 @@ export const blogPosts: BlogPost[] = [
     tags: ['Physiotherapy', 'Healthcare', 'Wellness'],
     author: {
       name: 'Dr. Chandra Sekhar Mukherjee',
-      role: 'Senior Physiotherapist',
+      role: 'Senior Physiotherapy Consultant',
       image: 'https://github.com/sa001gar/beta-Applied-Physio/blob/main/images/chandra_sekhar_mukherjee.png?raw=true'
     }
   },

@@ -28,7 +28,7 @@ const values = [
 
 const About = () => {
   return (
-    <main className="pt-32">
+    <main className="pt-20">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-green-50 to-yellow-50 py-20">
         <div className="container mx-auto px-4">
