@@ -6,19 +6,19 @@ const testimonials = [
     text: "The treatment I received was exceptional. The therapists are highly skilled and caring. My recovery has been remarkable!",
     author: "Sujoy Das",
     role: "Sports Enthusiast",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80"
+    image: "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg?t=st=1739557920~exp=1739561520~hmac=42a69827274a61321a168d204268acd77813456e2b1b43bcbb72d43282dd2fe5&w=740"
   },
   {
     text: "Best physiotherapy experience! The personalized attention and modern treatment techniques made a huge difference.",
     author: "Neha Jaiswal",
     role: "Corporate Professional",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80"
+    image: "https://img.freepik.com/free-photo/woman-doing-close-up-photoshoot-studio_53876-14476.jpg?t=st=1739557956~exp=1739561556~hmac=2e5e619865ebc799f4137d254db0cfaab13d08983b24895a7b66bc07288ce672&w=740"
   },
   {
     text: "Professional, knowledgeable, and effective. I'm back to my active lifestyle thanks to Applied Physio!",
     author: "Mainak Majumder",
     role: "Athlete",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80"
+    image: "https://img.freepik.com/free-photo/closeup-young-hispanic-man-casuals-studio_662251-600.jpg?t=st=1739557986~exp=1739561586~hmac=d7f9d17d747e24c3ae7b9e1a3bfb8eeb088688ba3ab2bbba017767696fe137e2&w=740"
   }
 ];
 

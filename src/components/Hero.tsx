@@ -58,9 +58,9 @@ const Hero = () => {
           <div className="relative group">
             <div className="absolute inset-0 bg-green-200 rounded-full filter blur-3xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
             <img
-              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80"
+              src="/images/hero.png"
               alt="Physiotherapy session"
-              className="w-full h-auto rounded-2xl shadow-2xl transform group-hover:scale-105 transition duration-500"
+              className="w-full h-auto rounded-2xl  transform group-hover:scale-105 transition duration-500"
             />
             
             {/* Floating Stats */}

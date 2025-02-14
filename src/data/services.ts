@@ -27,7 +27,7 @@ export const services = [
       'Enhanced physical function',
       'Faster recovery from injuries'
     ],
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80'
+    image: 'https://img.freepik.com/premium-photo/chiropractor-assisting-senior-patient_482257-77377.jpg?w=826'
   },
   {
     id: 'neurological',
@@ -43,7 +43,7 @@ export const services = [
       'Better daily function',
       'Increased independence'
     ],
-    image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80'
+    image: 'https://img.freepik.com/premium-photo/orthopedist-showing-spine-model-patient-hospital_179755-8378.jpg?uid=R124957424&ga=GA1.1.689373160.1737052406&semt=ais_incoming'
   },
   {
     id: 'sports',
@@ -59,7 +59,7 @@ export const services = [
       'Performance enhancement',
       'Sport-specific training'
     ],
-    image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80'
+    image: 'https://img.freepik.com/free-photo/doctor-helping-patient-rehabilitation_23-2150321598.jpg?semt=ais_hybrid'
   },
   {
     id: 'ergonomic',
@@ -75,7 +75,7 @@ export const services = [
       'Enhanced productivity',
       'Reduced workplace strain'
     ],
-    image: 'https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?auto=format&fit=crop&q=80'
+    image: 'https://img.freepik.com/free-photo/middle-aged-hispanic-business-people_23-2151099221.jpg?uid=R124957424&ga=GA1.1.689373160.1737052406&semt=ais_incoming'
   },
   {
     id: 'manual',
@@ -91,7 +91,7 @@ export const services = [
       'Better muscle function',
       'Enhanced recovery'
     ],
-    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80'
+    image: 'https://img.freepik.com/free-photo/doctor-helping-patient-rehabilitation_23-2150321561.jpg?semt=ais_hybrid'
   },
   {
     id: 'pediatric',
@@ -107,7 +107,7 @@ export const services = [
       'Play-based therapy',
       'Parent education'
     ],
-    image: 'https://images.unsplash.com/photo-1577744168855-0391d2ed2b3a?auto=format&fit=crop&q=80'
+    image: 'https://img.freepik.com/free-photo/medium-shot-doctor-weighing-baby_23-2148231346.jpg?semt=ais_hybrid'
   },
   {
     id: 'geriatric',
@@ -123,22 +123,22 @@ export const services = [
       'Enhanced mobility',
       'Better quality of life'
     ],
-    image: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80'
+    image: 'https://img.freepik.com/premium-photo/adult-hipster-son-senior-father-spend-time-together-home-talking-take-care-father_35752-3072.jpg?semt=ais_hybrid'
   },
-  {
-    id: 'cardio',
-    icon: Stethoscope,
-    title: 'Cardiopulmonary Rehabilitation',
-    description: 'Specialized programs for heart and lung conditions.',
-    color: 'text-teal-600',
-    featured: false,
-    fullDescription: 'Comprehensive rehabilitation for patients with heart and lung conditions.',
-    benefits: [
-      'Improved cardiovascular fitness',
-      'Better breathing capacity',
-      'Enhanced energy levels',
-      'Lifestyle modification support'
-    ],
-    image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80'
-  }
+  // {
+  //   id: 'cardio',
+  //   icon: Stethoscope,
+  //   title: 'Cardiopulmonary Rehabilitation',
+  //   description: 'Specialized programs for heart and lung conditions.',
+  //   color: 'text-teal-600',
+  //   featured: false,
+  //   fullDescription: 'Comprehensive rehabilitation for patients with heart and lung conditions.',
+  //   benefits: [
+  //     'Improved cardiovascular fitness',
+  //     'Better breathing capacity',
+  //     'Enhanced energy levels',
+  //     'Lifestyle modification support'
+  //   ],
+  //   image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80'
+  // }
 ];
