@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Loader from './components/Loader';
@@ -41,12 +41,12 @@ const Home = () => (
 
 // 404 Page
 const NotFound = () => (
-  <div className="flex flex-col items-center justify-center min-h-[60vh]">
+  <div className="flex flex-col items-center justify-center min-h-[60vh] pt-32">
     <h1 className="text-4xl font-bold text-gray-800 mb-4">404 - Page Not Found</h1>
     <p className="text-gray-600 mb-8">The page you're looking for doesn't exist.</p>
-    <a href="/" className="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition">
+    <Link to="/" className="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition">
       Go Home
-    </a>
+    </Link>
   </div>
 );
 
