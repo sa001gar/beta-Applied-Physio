@@ -1,11 +1,11 @@
-import { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Loader from './components/Loader';
 import Footer from './components/Footer';
 
-// Lazy load components
+// Lazy load components with preload
 const Services = lazy(() => import('./components/Services'));
 const ServiceDetails = lazy(() => import('./pages/ServiceDetails'));
 const About = lazy(() => import('./pages/About'));
@@ -15,6 +15,17 @@ const BlogPost = lazy(() => import('./pages/BlogPost'));
 const Social = lazy(() => import('./pages/Social'));
 const Features = lazy(() => import('./components/Features'));
 const Testimonials = lazy(() => import('./components/Testimonials'));
+
+// ScrollToTop component
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 // Layout component for consistent page structure
 const Layout = ({ children }: { children: React.ReactNode }) => (
@@ -53,6 +64,7 @@ const NotFound = () => (
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />

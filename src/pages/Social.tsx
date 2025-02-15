@@ -4,7 +4,7 @@ import { socialPosts, socialLinks } from '../data';
 
 const Social = () => {
   return (
-    <main className="pt-24 min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+    <main className="pt-20 min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
       {/* Hero Section */}
       <section className="py-16 px-4 bg-gradient-to-r from-purple-100 to-pink-100">
         <div className="max-w-6xl mx-auto text-center">

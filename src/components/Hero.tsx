@@ -60,7 +60,7 @@ const Hero = () => {
             <img
               src="https://github.com/sa001gar/beta-Applied-Physio/blob/main/images/hero.png?raw=true"
               alt="Physiotherapy session"
-              className="w-full h-auto rounded-2xl  transform group-hover:scale-105 transition duration-500"
+              className="w-full h-auto rounded-2xl transform group-hover:scale-105 transition duration-500"
             />
             
             {/* Floating Stats */}

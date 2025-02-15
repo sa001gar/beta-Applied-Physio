@@ -3,22 +3,32 @@ import { services } from '../data/services';
 
 const ServiceCard = ({ service }: { service: typeof services[0] }) => (
   <div className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
-    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black opacity-70 z-10"></div>
+    {/* Dark overlay with gradient */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/80 opacity-60 group-hover:opacity-75 transition-opacity duration-300 z-10"></div>
+    
+    {/* Decorative gradient overlay */}
+    <div className="absolute inset-0 bg-gradient-to-tr from-green-600/20 to-yellow-500/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"></div>
+    
+    {/* Background image */}
     <img 
       src={service.image} 
       alt={service.title} 
       className="w-full h-[300px] object-cover transform group-hover:scale-110 transition-transform duration-500"
     />
-    <div className="absolute top-4 left-4 z-20">
-      <div className={`${service.color} bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg`}>
-        <service.icon size={20} />
+    
+    {/* Icon */}
+    <div className="absolute top-4 left-4 z-30">
+      <div className={`${service.color} bg-white/90 w-12 h-12 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm group-hover:scale-110 transition-transform duration-300`}>
+        <service.icon size={24} />
       </div>
     </div>
-    <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20">
-      <h3 className="text-2xl font-bold mb-2 group-hover:text-yellow-300 transition-colors">
+    
+    {/* Content */}
+    <div className="absolute inset-x-0 bottom-0 p-6 z-30">
+      <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-yellow-300 transition-colors">
         {service.title}
       </h3>
-      <p className="text-gray-200 mb-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+      <p className="text-gray-100 mb-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
         {service.description}
       </p>
       <Link 
@@ -42,7 +52,7 @@ const Services = () => {
     : services;
 
   return (
-    <section className={`${isHomePage ? 'py-20' : 'pt-32'} bg-gradient-to-br from-green-50 to-yellow-50`}>
+    <section className={`${isHomePage ? 'py-20' : 'pt-32'} bg-gradient-to-br from-green-900/5 via-green-800/5 to-yellow-700/5  mb-8`}>
       <div className="container mx-auto px-4">
         {isHomePage ? (
           <div className="text-center mb-16">

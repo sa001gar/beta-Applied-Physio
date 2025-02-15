@@ -126,7 +126,7 @@ const Contact = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-green-800 mb-6">Get in Touch</h1>
+            <h1 className="text-5xl font-bold text-green-800 mb-6">Book an Appointment</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Have questions or ready to start your journey to better health? We're here to help.
           </p>
@@ -184,10 +184,13 @@ const Contact = () => {
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   >
                     <option value="">Select a service</option>
-                    <option value="Manual Therapy">Manual Therapy</option>
-                    <option value="Sports Rehabilitation">Sports Rehabilitation</option>
-                    <option value="Physical Therapy">Physical Therapy</option>
-                    <option value="Ergonomic Care">Ergonomic Care</option>
+                    <option value="Pain Management">Pain Management</option>
+                    <option value="Post Operative Physiotherapy">Post Operative Physiotherapy</option>
+                    <option value="Knee Replacement Physio">Knee Replacement Physio</option>
+                    <option value="Arthritis">Arthritis</option>
+                    <option value="Sports Injury Management">Sports Injury Management</option>
+                    <option value="Ergonomic">Ergonomic</option>
+                    <option value="Tennis Elbow">Tennis Elbow</option>
                   </select>
                 </div>
               </div>
@@ -202,8 +205,9 @@ const Contact = () => {
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 >
                   <option value="">Select a location</option>
-                  <option value="Main Clinic">Main Clinic - Benachity</option>
-                  <option value="Branch Office">Branch Office - Near NIT</option>
+                  <option value="Main Clinic">Main Clinic - 5D/23, SNP, Benachity, Near 54ft Road, Durgapur, West Bengal</option>
+                  <option value="Branch Office">Branch Office - Bala Medicine Center, 54ft Road, Near NIT Durgapur, West Bengal</option>
+                  <option value="Branch Office">Branch Office - New City Pharmacy, Nachan Road, Benachity Bazar, Beside Bata Showroom, Durgapur, West Bengal</option>
                 </select>
               </div>
 
@@ -249,6 +253,10 @@ const Contact = () => {
                         <span className="font-medium text-green-600">Branch Office:</span><br />
                         Bala Medicine Center, 54ft Road, Near NIT Durgapur
                       </p>
+                      <p className="text-gray-600">
+                        <span className="font-medium text-green-600">Branch Office:</span><br />
+                        New City Pharmacy, Nachan Road, Benachity Bazar, Beside Bata Showroom, Durgapur, West Bengal
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -258,7 +266,7 @@ const Contact = () => {
                   <div>
                     <p className="font-semibold text-gray-800">Phone</p>
                     <p className="text-gray-600">+91 98001 63749</p>
-                    <p className="text-gray-600">+91 95635 91505</p>
+                    {/* <p className="text-gray-600">+91 95635 91505</p> */}
                   </div>
                 </div>
 
