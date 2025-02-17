@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { services } from '../data';
+import { services } from '../data/services';
 
 interface ServiceData {
   id: string;
@@ -108,7 +108,7 @@ const Services = () => {
   ];
 
   return (
-    <section className={`pt-20 ${location.pathname === '/' ? 'py-12' : 'pt-32'}  bg-gradient-to-br from-green-50 to-yellow-50`}>
+    <section className={`pt-20 ${location.pathname === '/' ? 'py-12' : 'pt-32'} bg-gradient-to-br from-green-50 to-yellow-50`}>
       {location.pathname !== '/' && (
         <div className="container mx-auto px-4 mb-12 text-center">
           <h1 className="text-5xl font-bold text-green-800 mb-6">Our Services</h1>
@@ -118,7 +118,7 @@ const Services = () => {
         </div>
       )}
 
-      <div className="container mx-auto px-4 ">
+      <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {servicesData.map((service) => (
             <ServiceCard

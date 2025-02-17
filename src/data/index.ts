@@ -1,4 +1,5 @@
 import { Facebook, Youtube, Instagram, Linkedin, Space as Spa, Dumbbell, Heart, Activity, Brain, UserCog, Stethoscope, Baby, UserPlus } from 'lucide-react';
+import { services } from './services';
 
 export interface BlogPost {
   id: string;
@@ -99,137 +100,6 @@ export const socialPosts: SocialPost[] = [
   }
 ];
 
-// export const services = [
-//   {
-//     id: 'manual-therapy',
-//     icon: Activity,
-//     title: 'Manual Therapy',
-//     description: 'Expert hands-on treatment to relieve pain and improve mobility.',
-//     color: 'text-green-700',
-//     featured: true,
-//     fullDescription: 'Our manual therapy combines various hands-on techniques to treat musculoskeletal pain and disability. This includes joint mobilization, manipulation, and soft tissue techniques.',
-//     benefits: [
-//       'Pain relief and management',
-//       'Improved joint mobility',
-//       'Enhanced muscle function',
-//       'Better posture and alignment'
-//     ],
-//     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80'
-//   },
-//   {
-//     id: 'sports-rehab',
-//     icon: Dumbbell,
-//     title: 'Sports Rehabilitation',
-//     description: 'Specialized recovery programs for athletes and sports enthusiasts.',
-//     color: 'text-yellow-600',
-//     featured: true,
-//     fullDescription: 'Comprehensive rehabilitation programs designed specifically for athletes and sports-related injuries. We focus on getting you back to peak performance safely.',
-//     benefits: [
-//       'Injury prevention strategies',
-//       'Performance enhancement',
-//       'Sport-specific training',
-//       'Quick return to sport'
-//     ],
-//     image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80'
-//   },
-//   {
-//     id: 'neuro-physio',
-//     icon: Brain,
-//     title: 'Neurological Physiotherapy',
-//     description: 'Specialized care for neurological conditions and recovery.',
-//     color: 'text-purple-600',
-//     featured: true,
-//     fullDescription: 'Expert care for patients with neurological conditions, focusing on improving function, mobility, and quality of life.',
-//     benefits: [
-//       'Improved balance and coordination',
-//       'Enhanced mobility',
-//       'Better daily function',
-//       'Increased independence'
-//     ],
-//     image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80'
-//   },
-//   {
-//     id: 'cardio-rehab',
-//     icon: Heart,
-//     title: 'Cardiopulmonary Rehabilitation',
-//     description: 'Specialized programs for heart and lung conditions.',
-//     color: 'text-red-600',
-//     featured: false,
-//     fullDescription: 'Comprehensive rehabilitation for patients with heart and lung conditions, focusing on improving endurance and quality of life.',
-//     benefits: [
-//       'Improved cardiovascular fitness',
-//       'Better breathing capacity',
-//       'Enhanced energy levels',
-//       'Lifestyle modification support'
-//     ],
-//     image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80'
-//   },
-//   {
-//     id: 'ergonomic-care',
-//     icon: UserCog,
-//     title: 'Ergonomic Care',
-//     description: 'Workplace wellness and ergonomic assessments.',
-//     color: 'text-blue-600',
-//     featured: false,
-//     fullDescription: 'Professional workplace assessments and recommendations to prevent injuries and improve productivity.',
-//     benefits: [
-//       'Workplace injury prevention',
-//       'Improved posture',
-//       'Enhanced productivity',
-//       'Reduced workplace strain'
-//     ],
-//     image: 'https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?auto=format&fit=crop&q=80'
-//   },
-//   {
-//     id: 'geriatric-care',
-//     icon: UserPlus,
-//     title: 'Geriatric Physiotherapy',
-//     description: 'Specialized care for elderly patients.',
-//     color: 'text-orange-600',
-//     featured: false,
-//     fullDescription: 'Gentle and effective physiotherapy treatments designed specifically for elderly patients.',
-//     benefits: [
-//       'Improved balance',
-//       'Fall prevention',
-//       'Enhanced mobility',
-//       'Better quality of life'
-//     ],
-//     image: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80'
-//   },
-//   {
-//     id: 'pediatric-physio',
-//     icon: Baby,
-//     title: 'Pediatric Physiotherapy',
-//     description: 'Specialized care for children and infants.',
-//     color: 'text-pink-600',
-//     featured: false,
-//     fullDescription: 'Child-friendly physiotherapy services focusing on development and rehabilitation.',
-//     benefits: [
-//       'Motor development support',
-//       'Developmental milestone achievement',
-//       'Play-based therapy',
-//       'Parent education'
-//     ],
-//     image: 'https://images.unsplash.com/photo-1577744168855-0391d2ed2b3a?auto=format&fit=crop&q=80'
-//   },
-//   {
-//     id: 'post-surgery',
-//     icon: Stethoscope,
-//     title: 'Post-Surgical Rehabilitation',
-//     description: 'Comprehensive recovery programs after surgery.',
-//     color: 'text-teal-600',
-//     featured: false,
-//     fullDescription: 'Specialized rehabilitation programs to ensure optimal recovery after surgical procedures.',
-//     benefits: [
-//       'Faster recovery',
-//       'Pain management',
-//       'Restored function',
-//       'Prevented complications'
-//     ],
-//     image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80'
-//   }
-// ];
-
 export const teamMembers: TeamMember[] = [
   {
     name: "Chandra Sekhar Mukherjee",
@@ -280,3 +150,5 @@ export const socialLinks = [
     link: 'https://linkedin.com/company/theappliedphysio'
   }
 ];
+
+export { services };

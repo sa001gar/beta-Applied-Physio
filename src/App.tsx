@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Loader from './components/Loader';
 import Footer from './components/Footer';
+import ChatBot from './components/ChatBot';
 
 // Lazy load components with preload
 const Services = lazy(() => import('./components/Services'));
@@ -37,6 +38,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
       </Suspense>
     </main>
     <Footer />
+    <ChatBot />
   </div>
 );
 
