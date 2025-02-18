@@ -1,10 +1,77 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Bot, ChevronRight } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clock, Activity, Dumbbell, Brain, Users, Heart, Stethoscope  } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+
+
+export const services = [
+  {
+    id: 'physiotherapy',
+    title: 'Physiotherapy',
+    description: 'Comprehensive physical therapy for various conditions and injuries',
+    icon: Activity
+  },
+  {
+    id: 'sports-rehab',
+    title: 'Sports Rehabilitation',
+    description: 'Specialized rehabilitation for athletes and sports-related injuries',
+    icon: Dumbbell
+  },
+  {
+    id: 'neuro-rehab',
+    title: 'Neurological Rehabilitation',
+    description: 'Treatment for neurological conditions and recovery',
+    icon: Brain
+  },
+  {
+    id: 'geriatric-care',
+    title: 'Geriatric Care',
+    description: 'Specialized care for elderly patients',
+    icon: Users
+  },
+  {
+    id: 'cardiac-rehab',
+    title: 'Cardiac Rehabilitation',
+    description: 'Recovery and rehabilitation for heart patients',
+    icon: Heart
+  },
+  {
+    id: 'orthopedic-care',
+    title: 'Orthopedic Care',
+    description: 'Treatment for musculoskeletal conditions and injuries',
+    icon: Stethoscope
+  }
+];
+
+export const locations = [
+  {
+    id: 'main-clinic',
+    name: 'Main Clinic - Benachity',
+    address: '5D/23, SNP, Benachity, Near 54ft Road, Durgapur',
+    phone: '+91 98001 63749'
+  },
+  {
+    id: 'branch-office',
+    name: 'Branch Office - Near NIT',
+    address: 'Bala Medicine Center, 54ft Road, Near NIT Durgapur',
+    phone: '+91 95635 91505'
+  }
+];
+
+export const workingHours = {
+  weekdays: '9:00 AM - 6:00 PM',
+  saturday: '10:00 AM - 4:00 PM',
+  sunday: 'Closed'
+};
+
 interface Message {
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+interface Message {
+  role: 'user' | 'assistant' | 'system';
   content: string;
 }
 
@@ -26,26 +93,16 @@ const initialBookingForm: BookingForm = {
   message: ''
 };
 
-const services = [
-  'Manual Therapy',
-  'Sports Rehabilitation',
-  'Physical Therapy',
-  'Ergonomic Care'
-];
-
-const locations = [
-  'Main Clinic - Benachity',
-  'Branch Office - Near NIT'
-];
-
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hello! I am your Applied Physio assistant. How can I help you with your physiotherapy needs today?"
+      content: "👋 Hello! I'm your Applied Physio assistant. How can I help you today? You can ask me about our services, book appointments, or get information about physiotherapy. Type 'quit' at any time to end our conversation."
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
@@ -54,6 +111,30 @@ const ChatBot = () => {
   const [bookingStep, setBookingStep] = useState(0);
   const [bookingForm, setBookingForm] = useState<BookingForm>(initialBookingForm);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      const handleFocus = () => setIsKeyboardVisible(true);
+      const handleBlur = () => setIsKeyboardVisible(false);
+      
+      inputRef.current?.addEventListener('focus', handleFocus);
+      inputRef.current?.addEventListener('blur', handleBlur);
+      
+      return () => {
+        inputRef.current?.removeEventListener('focus', handleFocus);
+        inputRef.current?.removeEventListener('blur', handleBlur);
+      };
+    }
+  }, [isMobile]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -62,6 +143,35 @@ const ChatBot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, bookingStep]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (chatWindowRef.current && !chatWindowRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isMobile && isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobile, isOpen]);
+
+  const resetChat = () => {
+    setMessages([
+      {
+        role: 'assistant',
+        content: "👋 Hello! I'm your Applied Physio assistant. How can I help you today? You can ask me about our services, book appointments, or get information about physiotherapy. Type 'quit' at any time to end our conversation."
+      }
+    ]);
+    setIsBooking(false);
+    setBookingStep(0);
+    setBookingForm(initialBookingForm);
+    setInputMessage('');
+  };
 
   const handleQuickReply = async (question: string) => {
     if (question.toLowerCase().includes('book')) {
@@ -77,11 +187,16 @@ const ChatBot = () => {
     setBookingStep(0);
     setMessages(prev => [...prev, {
       role: 'assistant',
-      content: "Great! Let's help you book an appointment. Please enter your name:"
+      content: "Let's help you book an appointment. Please enter your name:"
     }]);
   };
 
   const handleBookingInput = (value: string) => {
+    if (value.toLowerCase() === 'quit') {
+      handleQuit();
+      return;
+    }
+
     switch (bookingStep) {
       case 0:
         setBookingForm(prev => ({ ...prev, name: value }));
@@ -92,6 +207,12 @@ const ChatBot = () => {
         setBookingStep(1);
         break;
       case 1:
+        if (!value.includes('@')) {
+          setMessages(prev => [...prev,
+            { role: 'assistant', content: "Please enter a valid email address." }
+          ]);
+          return;
+        }
         setBookingForm(prev => ({ ...prev, email: value }));
         setMessages(prev => [...prev, 
           { role: 'user', content: value },
@@ -100,6 +221,12 @@ const ChatBot = () => {
         setBookingStep(2);
         break;
       case 2:
+        if (!/^\d{10}$/.test(value)) {
+          setMessages(prev => [...prev,
+            { role: 'assistant', content: "Please enter a valid 10-digit phone number." }
+          ]);
+          return;
+        }
         setBookingForm(prev => ({ ...prev, phone: value }));
         setMessages(prev => [...prev, 
           { role: 'user', content: value },
@@ -131,6 +258,17 @@ const ChatBot = () => {
     setInputMessage('');
   };
 
+  const handleQuit = () => {
+    setMessages(prev => [...prev,
+      { role: 'user', content: 'quit' },
+      { role: 'assistant', content: "Thank you for chatting with me. If you need assistance later, feel free to return. Have a great day! 👋" }
+    ]);
+    setTimeout(() => {
+      setIsOpen(false);
+      setTimeout(resetChat, 500);
+    }, 2000);
+  };
+
   const handleFinalBooking = async (form: BookingForm) => {
     setIsLoading(true);
     try {
@@ -151,7 +289,7 @@ const ChatBot = () => {
       if (data.success) {
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: "Thank you for booking! We'll confirm your appointment shortly via email and phone."
+          content: `Thank you for booking, ${form.name}! We'll confirm your appointment shortly via email and phone. Is there anything else I can help you with?`
         }]);
       } else {
         throw new Error('Submission failed');
@@ -159,7 +297,7 @@ const ChatBot = () => {
     } catch (error) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I apologize, but there was an error booking your appointment. Please try again or contact us directly."
+        content: "I apologize, but there was an error booking your appointment. Please try again or contact us directly at +91 98001 63749."
       }]);
     } finally {
       setIsLoading(false);
@@ -173,6 +311,11 @@ const ChatBot = () => {
     const userMessage = message || inputMessage.trim();
     if (!userMessage) return;
 
+    if (userMessage.toLowerCase() === 'quit') {
+      handleQuit();
+      return;
+    }
+
     if (isBooking) {
       handleBookingInput(userMessage);
       return;
@@ -183,15 +326,30 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      // const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
       
       const prompt = `You are a physiotherapy assistant chatbot for Applied Physio clinic. 
       Only answer questions related to physiotherapy, treatments, and our services. 
       If the question is not related to physiotherapy, politely decline to answer and redirect the conversation back to physiotherapy topics.
-      Current conversation context: ${JSON.stringify(messages)}
-      User message: ${userMessage}
+      Keep responses concise and professional.
       
-      Keep responses concise, professional, and focused on physiotherapy.`;
+      Available services:
+      ${services.map(s => `- ${s.title}: ${s.description}`).join('\n')}
+      
+      Locations:
+      ${locations.map(l => `- ${l.name}: ${l.address}`).join('\n')}
+      
+      Working Hours:
+      - Monday to Friday: ${workingHours.weekdays}
+      - Saturday: ${workingHours.saturday}
+      - Sunday: ${workingHours.sunday}
+      
+      Contact:
+      ${locations.map(l => `- ${l.name}: ${l.phone}`).join('\n')}
+      
+      Current conversation context: ${JSON.stringify(messages.slice(-5))}
+      User message: ${userMessage}`;
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -216,30 +374,41 @@ const ChatBot = () => {
     switch (bookingStep) {
       case 3:
         return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-            {services.map((service) => (
-              <button
-                key={service}
-                onClick={() => handleBookingInput(service)}
-                className="px-4 py-2 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition-colors flex items-center justify-between"
-              >
-                <span className="line-clamp-2">{service}</span>
-                <ChevronRight className="w-4 h-4 flex-shrink-0 ml-2" />
-              </button>
-            ))}
+          <div className="grid grid-cols-1 gap-2 px-4 mb-4">
+            {services.map((service) => {
+              const Icon = service.icon;
+              return (
+                <button
+                  key={service.id}
+                  onClick={() => handleBookingInput(service.title)}
+                  className="w-full px-4 py-3 bg-green-50 text-green-700 rounded-xl text-sm hover:bg-green-100 transition-colors flex items-center space-x-3 group"
+                >
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <div className="flex-1 text-left">
+                    <div className="font-medium">{service.title}</div>
+                    <div className="text-xs text-green-600">{service.description}</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              );
+            })}
           </div>
         );
       case 4:
         return (
-          <div className="grid grid-cols-1 gap-2 mb-4">
+          <div className="grid grid-cols-1 gap-2 px-4 mb-4">
             {locations.map((location) => (
               <button
-                key={location}
-                onClick={() => handleBookingInput(location)}
-                className="px-4 py-2 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition-colors flex items-center justify-between"
+                key={location.id}
+                onClick={() => handleBookingInput(location.name)}
+                className="w-full px-4 py-3 bg-green-50 text-green-700 rounded-xl text-sm hover:bg-green-100 transition-colors flex items-center space-x-3 group"
               >
-                <span className="line-clamp-2">{location}</span>
-                <ChevronRight className="w-4 h-4 flex-shrink-0 ml-2" />
+                <MapPin className="w-5 h-5 flex-shrink-0" />
+                <div className="flex-1 text-left">
+                  <div className="font-medium">{location.name}</div>
+                  <div className="text-xs text-green-600">{location.address}</div>
+                </div>
+                <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
             ))}
           </div>
@@ -249,49 +418,72 @@ const ChatBot = () => {
     }
   };
 
+  const getInputPlaceholder = () => {
+    if (isBooking) {
+      switch (bookingStep) {
+        case 0: return "Enter your name...";
+        case 1: return "Enter your email...";
+        case 2: return "Enter your phone number...";
+        case 5: return "Enter any additional requirements...";
+        default: return "Type your response...";
+      }
+    }
+    return "Type your message... (or 'quit' to end conversation)";
+  };
+
   return (
     <>
-      {/* Chat Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-green-600 text-white p-3 sm:p-4 rounded-full shadow-lg hover:bg-green-700 transition-colors z-50 group"
+        className="fixed bottom-6 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-colors z-50 group"
         aria-label="Open chat"
       >
-        <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
-        <span className="absolute right-full mr-3 bg-white px-2 py-1 rounded-lg shadow-md text-gray-700 text-xs sm:text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+        <MessageCircle className="w-6 h-6" />
+        <span className="absolute right-full mr-3 bg-white px-3 py-2 rounded-lg shadow-md text-gray-700 text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
           Chat with us
         </span>
       </button>
 
-      {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed my-2 bottom-20 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[400px] h-[550px] max-h-[calc(100vh-10rem)] bg-white rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden"
+            ref={chatWindowRef}
+            initial={isMobile ? { y: '100%' } : { opacity: 0, y: 20 }}
+            animate={isMobile ? { y: 0 } : { opacity: 1, y: 0 }}
+            exit={isMobile ? { y: '100%' } : { opacity: 0, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className={`fixed z-50 bg-white shadow-2xl flex flex-col
+              ${isMobile 
+                ? 'inset-0' 
+                : 'bottom-24 right-6 w-[400px] h-[600px] max-h-[calc(100vh-8rem)] rounded-2xl overflow-hidden'}`}
           >
-            {/* Header */}
-            <div className="p-3 sm:p-4 bg-green-600 text-white rounded-t-2xl flex items-center justify-between">
+            <div className="flex-shrink-0 p-4 bg-green-600 text-white flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Bot className="w-5 h-5 sm:w-6 sm:h-6" />
+                <Bot className="w-6 h-6" />
                 <div>
-                  <h3 className="font-semibold text-sm sm:text-base">Applied Physio Assistant</h3>
+                  <h3 className="font-semibold text-base">Applied Physio Assistant</h3>
                   <p className="text-xs text-green-100">Online | Ready to help</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-white hover:text-green-100 transition-colors p-1"
-                aria-label="Close chat"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleQuit}
+                  className="p-2 hover:bg-green-500 rounded-full transition-colors"
+                  aria-label="End conversation"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-2 hover:bg-green-500 rounded-full transition-colors"
+                  aria-label="Close chat"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 custom-scrollbar">
               {messages.map((message, index) => (
                 <motion.div
                   key={index}
@@ -300,7 +492,7 @@ const ChatBot = () => {
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] p-2.5 sm:p-3 rounded-2xl text-sm sm:text-base ${
+                    className={`max-w-[85%] p-3 rounded-2xl text-sm ${
                       message.role === 'user'
                         ? 'bg-green-600 text-white rounded-tr-none'
                         : 'bg-white text-gray-800 shadow-md rounded-tl-none'
@@ -312,7 +504,7 @@ const ChatBot = () => {
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-white text-gray-800 p-2.5 sm:p-3 rounded-2xl shadow-md rounded-tl-none flex items-center space-x-2 text-sm sm:text-base">
+                  <div className="bg-white text-gray-800 p-3 rounded-2xl shadow-md rounded-tl-none flex items-center space-x-2">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span>Typing...</span>
                   </div>
@@ -321,58 +513,68 @@ const ChatBot = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Booking Options */}
             {isBooking && (
-              <div className="px-3 sm:px-4">
+              <div className="flex-shrink-0 max-h-[40vh] overflow-y-auto custom-scrollbar">
                 {renderBookingOptions()}
               </div>
             )}
 
-            {/* Quick Replies (only show if not booking) */}
             {!isBooking && (
-              <div className="p-3 sm:p-4 bg-white border-t border-gray-100">
+              <div className="flex-shrink-0 p-3 bg-white border-t border-gray-100">
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => handleQuickReply("I'd like to book an appointment")}
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-green-50 text-green-700 rounded-full text-xs sm:text-sm hover:bg-green-100 transition-colors"
+                    className="inline-flex items-center space-x-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm hover:bg-green-100 transition-colors"
                   >
-                    Book Appointment
+                    <Clock className="w-4 h-4" />
+                    <span>Book Appointment</span>
                   </button>
                   <button
                     onClick={() => handleQuickReply("What services do you offer?")}
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-green-50 text-green-700 rounded-full text-xs sm:text-sm hover:bg-green-100 transition-colors"
+                    className="inline-flex items-center space-x-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm hover:bg-green-100 transition-colors"
                   >
-                    Our Services
+                    <Activity className="w-4 h-4" />
+                    <span>Our Services</span>
+                  </button>
+                  <button
+                    onClick={() => handleQuickReply("What are your working hours?")}
+                    className="inline-flex items-center space-x-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm hover:bg-green-100 transition-colors"
+                  >
+                    <Clock className="w-4 h-4" />
+                    <span>Working Hours</span>
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Input */}
-            <div className="p-3 sm:p-4 bg-white border-t border-gray-200">
-              <div className="flex space-x-2">
-                <div className="flex-1 relative">
-                  <textarea
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSend();
-                      }
-                    }}
-                    placeholder={isBooking ? "Type your response..." : "Type your message..."}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 bg-gray-50 border border-gray-200 rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none h-[50px] sm:h-[60px] transition-all duration-200"
-                  />
-                  <button
-                    onClick={() => handleSend()}
-                    disabled={isLoading || !inputMessage.trim()}
-                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-green-600 hover:text-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed p-1"
-                    aria-label="Send message"
-                  >
-                    <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
-                </div>
+            <div className="flex-shrink-0 p-3 bg-white border-t border-gray-200">
+              <div className="relative">
+                <textarea
+                  ref={inputRef}
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSend();
+                    }
+                  }}
+                  placeholder={getInputPlaceholder()}
+                  className="w-full px-4 py-2 pr-12 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none transition-all duration-200"
+                  style={{
+                    height: '64px',
+                    maxHeight: '120px',
+                    minHeight: '64px'
+                  }}
+                />
+                <button
+                  onClick={() => handleSend()}
+                  disabled={isLoading || !inputMessage.trim()}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-green-600 hover:text-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg hover:bg-green-50"
+                  aria-label="Send message"
+                >
+                  <Send className="w-5 h-5" />
+                </button>
               </div>
             </div>
           </motion.div>
