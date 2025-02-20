@@ -70,11 +70,6 @@ interface Message {
   content: string;
 }
 
-interface Message {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-}
-
 interface BookingForm {
   name: string;
   email: string;
@@ -113,6 +108,36 @@ const ChatBot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const validateEmail = (email: string): boolean => {
+    // More strict email validation
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+    
+    if (!emailRegex.test(email)) {
+      return false;
+    }
+
+    // Additional validation checks
+    const [localPart, domain] = email.split('@');
+    
+    // Check local part length (max 64 characters)
+    if (localPart.length > 64) {
+      return false;
+    }
+
+    // Check domain length (max 255 characters)
+    if (domain.length > 255) {
+      return false;
+    }
+
+    // Check if domain has at least one dot and valid TLD
+    const domainParts = domain.split('.');
+    if (domainParts.length < 2 || domainParts[domainParts.length - 1].length < 2) {
+      return false;
+    }
+
+    return true;
+  };
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -207,9 +232,9 @@ const ChatBot = () => {
         setBookingStep(1);
         break;
       case 1:
-        if (!value.includes('@')) {
+        if (!validateEmail(value)) {
           setMessages(prev => [...prev,
-            { role: 'assistant', content: "Please enter a valid email address." }
+            { role: 'assistant', content: "Please enter a valid email address (e.g., name@example.com). The email should have a proper domain name with at least two characters after the dot." }
           ]);
           return;
         }
