@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clock, Activity, Dumbbell, Brain, Users, Heart, Stethoscope  } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clock, Activity, Dumbbell, Brain, Users, Heart, Stethoscope, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-
-
 
 export const services = [
   {
@@ -105,38 +103,82 @@ const ChatBot = () => {
   const [isBooking, setIsBooking] = useState(false);
   const [bookingStep, setBookingStep] = useState(0);
   const [bookingForm, setBookingForm] = useState<BookingForm>(initialBookingForm);
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isVoiceSupported, setIsVoiceSupported] = useState(false);
+  const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const synthRef = useRef<SpeechSynthesis | null>(null);
 
-  const validateEmail = (email: string): boolean => {
-    // More strict email validation
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
-    
-    if (!emailRegex.test(email)) {
-      return false;
+  // Initialize speech recognition and synthesis
+  useEffect(() => {
+    // Check for Speech Recognition support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-US';
+      setIsVoiceSupported(true);
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => result[0])
+          .map(result => result.transcript)
+          .join('');
+
+        setInputMessage(transcript);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
     }
 
-    // Additional validation checks
-    const [localPart, domain] = email.split('@');
-    
-    // Check local part length (max 64 characters)
-    if (localPart.length > 64) {
-      return false;
+    // Check for Speech Synthesis support
+    if ('speechSynthesis' in window) {
+      synthRef.current = window.speechSynthesis;
+      setIsSpeechSupported(true);
     }
 
-    // Check domain length (max 255 characters)
-    if (domain.length > 255) {
-      return false;
-    }
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      if (synthRef.current) {
+        synthRef.current.cancel();
+      }
+    };
+  }, []);
 
-    // Check if domain has at least one dot and valid TLD
-    const domainParts = domain.split('.');
-    if (domainParts.length < 2 || domainParts[domainParts.length - 1].length < 2) {
-      return false;
+  const toggleVoiceInput = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current?.start();
+      setIsListening(true);
     }
+  };
 
-    return true;
+  const speakMessage = (text: string) => {
+    if (synthRef.current && !isSpeaking) {
+      setIsSpeaking(true);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.onend = () => setIsSpeaking(false);
+      synthRef.current.speak(utterance);
+    }
+  };
+
+  const stopSpeaking = () => {
+    if (synthRef.current) {
+      synthRef.current.cancel();
+      setIsSpeaking(false);
+    }
   };
 
   useEffect(() => {
@@ -214,6 +256,31 @@ const ChatBot = () => {
       role: 'assistant',
       content: "Let's help you book an appointment. Please enter your name:"
     }]);
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+    
+    if (!emailRegex.test(email)) {
+      return false;
+    }
+
+    const [localPart, domain] = email.split('@');
+    
+    if (localPart.length > 64) {
+      return false;
+    }
+
+    if (domain.length > 255) {
+      return false;
+    }
+
+    const domainParts = domain.split('.');
+    if (domainParts.length < 2 || domainParts[domainParts.length - 1].length < 2) {
+      return false;
+    }
+
+    return true;
   };
 
   const handleBookingInput = (value: string) => {
@@ -312,18 +379,26 @@ const ChatBot = () => {
 
       const data = await response.json();
       if (data.success) {
+        const successMessage = `Thank you for booking, ${form.name}! We'll confirm your appointment shortly via email and phone. Is there anything else I can help you with?`;
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: `Thank you for booking, ${form.name}! We'll confirm your appointment shortly via email and phone. Is there anything else I can help you with?`
+          content: successMessage
         }]);
+        if (isSpeechSupported) {
+          speakMessage(successMessage);
+        }
       } else {
         throw new Error('Submission failed');
       }
     } catch (error) {
+      const errorMessage = "I apologize, but there was an error booking your appointment. Please try again or contact us directly at +91 98001 63749.";
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I apologize, but there was an error booking your appointment. Please try again or contact us directly at +91 98001 63749."
+        content: errorMessage
       }]);
+      if (isSpeechSupported) {
+        speakMessage(errorMessage);
+      }
     } finally {
       setIsLoading(false);
       setIsBooking(false);
@@ -351,7 +426,6 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      // const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
       const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
       
       const prompt = `You are a physiotherapy assistant chatbot for Applied Physio clinic. 
@@ -384,12 +458,19 @@ const ChatBot = () => {
         startBooking();
       } else {
         setMessages(prev => [...prev, { role: 'assistant', content: text }]);
+        if (isSpeechSupported) {
+          speakMessage(text);
+        }
       }
     } catch (error) {
+      const errorMessage = "I apologize, but I am having trouble processing your request. Please try again or contact our clinic directly.";
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I apologize, but I am having trouble processing your request. Please try again or contact our clinic directly."
+        content: errorMessage
       }]);
+      if (isSpeechSupported) {
+        speakMessage(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -491,6 +572,24 @@ const ChatBot = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
+                {isVoiceSupported && (
+                  <button
+                    onClick={toggleVoiceInput}
+                    className={`p-2 ${isListening ? 'bg-red-500' : 'hover:bg-green-500'} rounded-full transition-colors`}
+                    aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
+                  >
+                    {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                  </button>
+                )}
+                {isSpeechSupported && (
+                  <button
+                    onClick={isSpeaking ? stopSpeaking : () => speakMessage(messages[messages.length - 1].content)}
+                    className={`p-2 ${isSpeaking ? 'bg-red-500' : 'hover:bg-green-500'} rounded-full transition-colors`}
+                    aria-label={isSpeaking ? 'Stop speaking' : 'Read message'}
+                  >
+                    {isSpeaking ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                  </button>
+                )}
                 <button
                   onClick={handleQuit}
                   className="p-2 hover:bg-green-500 rounded-full transition-colors"

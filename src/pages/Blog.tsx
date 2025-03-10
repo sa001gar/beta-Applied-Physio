@@ -1,19 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, ChevronRight, Tag, Search, Home } from 'lucide-react';
-import { blogPosts } from '../data';
+import { Calendar, Clock, ChevronRight, Tag, Search } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import type { Blog } from '../lib/supabase';
 import Breadcrumb from '../components/Breadcrumb';
+import Loader from '../components/Loader';
 
 const categories = ['All', 'Education', 'Sports', 'Lifestyle', 'Treatment', 'Research'];
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredPosts = blogPosts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const fetchBlogs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setBlogs(data || []);
+    } catch (error) {
+      console.error('Error fetching blogs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredBlogs = blogs.filter(blog => {
+    const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || blog.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -64,52 +89,64 @@ const Blog = () => {
 
       {/* Blog Posts Grid */}
       <section className="px-4 pb-16">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.map((post) => (
-            <article
-              key={post.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
-            >
-              <Link to={`/blog/${post.id}`} className="block">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                    <span className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      {post.date}
-                    </span>
-                    <span className="flex items-center">
-                      <Clock className="w-4 h-4 mr-1" />
-                      {post.readTime}
-                    </span>
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-3">
-                    {post.title}
-                  </h2>
-                  <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-emerald-50 text-emerald-700"
-                      >
-                        <Tag className="w-3 h-3 mr-1" />
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center text-emerald-600 hover:text-emerald-700 font-medium">
-                    Read More
-                    <ChevronRight className="w-4 h-4 ml-1" />
-                  </div>
-                </div>
-              </Link>
-            </article>
-          ))}
+        <div className="max-w-6xl mx-auto">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader size="large" />
+            </div>
+          ) : filteredBlogs.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">No blog posts found.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredBlogs.map((blog) => (
+                <article
+                  key={blog.id}
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
+                >
+                  <Link to={`/blog/${blog.slug}`} className="block">
+                    <img
+                      src={blog.image_url}
+                      alt={blog.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-6">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                        <span className="flex items-center">
+                          <Calendar className="w-4 h-4 mr-1" />
+                          {new Date(blog.created_at).toLocaleDateString()}
+                        </span>
+                        <span className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {Math.ceil(blog.content.length / 1000)} min read
+                        </span>
+                      </div>
+                      <h2 className="text-xl font-bold text-gray-900 mb-3">
+                        {blog.title}
+                      </h2>
+                      <p className="text-gray-600 mb-4">{blog.excerpt}</p>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {blog.tags?.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-emerald-50 text-emerald-700"
+                          >
+                            <Tag className="w-3 h-3 mr-1" />
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex items-center text-emerald-600 hover:text-emerald-700 font-medium">
+                        Read More
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </div>
+                    </div>
+                  </Link>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </main>
