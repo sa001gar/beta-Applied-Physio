@@ -203,7 +203,7 @@ const ChatBot = () => {
       );
       
       if (preferredVoice) {
-        utterance.voice = voice.name.includes('Female');
+        utterance.voice = preferredVoice;
       }
 
       utterance.onend = () => setIsSpeaking(false);
