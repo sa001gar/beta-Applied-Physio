@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clock, Activity, Dumbbell, Brain, Users, Heart, Stethoscope, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import * as Tone from 'tone';
 
 export const services = [
   {
@@ -88,6 +89,9 @@ const initialBookingForm: BookingForm = {
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
+// Initialize Tone.js synth for audio feedback
+const synth = new Tone.Synth().toDestination();
+
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -107,6 +111,7 @@ const ChatBot = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isVoiceSupported, setIsVoiceSupported] = useState(false);
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+  const [lastTranscript, setLastTranscript] = useState('');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -131,11 +136,22 @@ const ChatBot = () => {
           .map(result => result.transcript)
           .join('');
 
-        setInputMessage(transcript);
+        // Only update if the transcript has changed
+        if (transcript !== lastTranscript) {
+          setInputMessage(transcript);
+          setLastTranscript(transcript);
+        }
       };
 
       recognitionRef.current.onend = () => {
         setIsListening(false);
+        // Play end tone
+        synth.triggerAttackRelease("C4", "8n");
+      };
+
+      recognitionRef.current.onstart = () => {
+        // Play start tone
+        synth.triggerAttackRelease("E4", "8n");
       };
     }
 
@@ -153,7 +169,7 @@ const ChatBot = () => {
         synthRef.current.cancel();
       }
     };
-  }, []);
+  }, [lastTranscript]);
 
   const toggleVoiceInput = () => {
     if (isListening) {
@@ -162,6 +178,9 @@ const ChatBot = () => {
     } else {
       recognitionRef.current?.start();
       setIsListening(true);
+      // Clear previous input when starting new voice input
+      setInputMessage('');
+      setLastTranscript('');
     }
   };
 
@@ -169,6 +188,24 @@ const ChatBot = () => {
     if (synthRef.current && !isSpeaking) {
       setIsSpeaking(true);
       const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Customize voice parameters for more natural speech
+      utterance.rate = 1.0; // Normal speed
+      utterance.pitch = 1.0; // Normal pitch
+      utterance.volume = 1.0; // Full volume
+      
+      // Get available voices and select a natural-sounding one
+      const voices = synthRef.current.getVoices();
+      const preferredVoice = voices.find(voice => 
+        voice.name.includes('Google') || // Prefer Google voices
+        voice.name.includes('Natural') || // Or voices labeled as natural
+        voice.name.includes('Female') // Or female voices
+      );
+      
+      if (preferredVoice) {
+        utterance.voice = voice.name.includes('Female');
+      }
+
       utterance.onend = () => setIsSpeaking(false);
       synthRef.current.speak(utterance);
     }
