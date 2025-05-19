@@ -53,7 +53,7 @@ const Services = () => {
 
   return (
     <section className={`${isHomePage ? 'py-20' : 'pt-32'} bg-gradient-to-br from-green-900/5 via-green-800/5 to-yellow-700/5`}>
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 py-12">
         {isHomePage ? (
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-green-800 mb-4">Our Services</h2>
