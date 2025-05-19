@@ -105,7 +105,7 @@ export const teamMembers: TeamMember[] = [
     name: "Chandra Sekhar Mukherjee",
     role: "Founder & Ergonomic Care Advisor",
     description: "Specializing in ergonomic care advisory with over 5+ years of experience.",
-    image: "https://github.com/sa001gar/beta-Applied-Physio/blob/main/images/chandra_sekhar_mukherjee.png?raw=true",
+    image: "/images/chandra_sekhar_mukherjee.png",
     social: {
       linkedin: "#",
       instagram: "#",
@@ -116,7 +116,7 @@ export const teamMembers: TeamMember[] = [
     name: "Dr. S.N. Modak",
     role: "Senior Physiotherapist",
     description: "BPT, MPT (Ortho), MIAP (Physio), P.W. Hemophelia from CMC (Vellor).",
-    image: "https://github.com/sa001gar/beta-Applied-Physio/blob/main/images/doctor.jpeg?raw=true",
+    image: "/images/doctor.jpeg",
     social: {
       linkedin: "#",
       youtube: "#"

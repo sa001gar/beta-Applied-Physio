@@ -58,7 +58,7 @@ const Hero = () => {
           <div className="relative group">
             <div className="absolute inset-0 bg-green-200 rounded-full filter blur-3xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
             <img
-              src="https://github.com/sa001gar/beta-Applied-Physio/blob/main/images/hero.png?raw=true"
+              src="/images/Generations of Joyful Togetherness.avif"
               alt="Physiotherapy session"
               className="w-full h-auto rounded-2xl transform group-hover:scale-105 transition duration-500"
             />
