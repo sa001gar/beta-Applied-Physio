@@ -48,7 +48,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div className="space-y-4">
             <Link to="/" className="text-2xl font-bold text-white">
-              Applied Physio
+              The Applied Physio
             </Link>
             <p className="text-gray-300">
               Professional physiotherapy services for better health and wellness.
