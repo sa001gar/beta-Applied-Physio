@@ -1,7 +1,11 @@
 import { ArrowRight, Activity, Heart, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import BookNow from './BookNow';
 
 const Hero = () => {
+  const [showBooking, setShowBooking] = useState(false);
+
   return (
     <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 bg-gradient-to-r from-green-50 via-yellow-50 to-green-100 overflow-hidden">
       <div className="container mx-auto px-6">
@@ -39,13 +43,13 @@ const Hero = () => {
             </div>
 
             <div className="flex flex-wrap gap-4 mt-6">
-              <Link
-                to="/contact"
+              <button
+                onClick={() => setShowBooking(true)}
                 className="px-8 py-4 text-white bg-green-600 hover:bg-green-700 rounded-full shadow-lg transition flex items-center space-x-2"
               >
                 <span>Book Appointment</span>
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
               <Link
                 to="/services"
                 className="px-8 py-4 text-green-600 border-2 border-green-600 hover:bg-green-50 rounded-full transition"
@@ -79,6 +83,11 @@ const Hero = () => {
         <div className="absolute top-1/4 left-0 w-64 h-64 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
         <div className="absolute bottom-1/4 right-0 w-64 h-64 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
       </div>
+
+      <BookNow 
+        isOpen={showBooking} 
+        onClose={() => setShowBooking(false)} 
+      />
     </section>
   );
 };

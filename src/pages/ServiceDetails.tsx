@@ -2,10 +2,13 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Check } from 'lucide-react';
 import { services } from '../data/services';
 import Breadcrumb from '../components/Breadcrumb';
+import BookNow from '../components/BookNow';
+import { useState } from 'react';
 
 const ServiceDetails = () => {
   const { id } = useParams();
   const service = services.find(s => s.id === id);
+  const [showBooking, setShowBooking] = useState(false);
 
   if (!service) {
     return (
@@ -70,15 +73,21 @@ const ServiceDetails = () => {
               </ul>
             </div>
 
-            <Link
-              to="/contact"
+            <button
+              onClick={() => setShowBooking(true)}
               className="inline-block bg-green-600 text-white px-8 py-4 rounded-full hover:bg-green-700 transition-colors mt-6"
             >
               Book an Appointment
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+
+      <BookNow 
+        isOpen={showBooking} 
+        onClose={() => setShowBooking(false)}
+        defaultService={service.title}
+      />
     </main>
   );
 };
