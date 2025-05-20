@@ -1,13 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { PlusCircle, Edit, Trash2, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Eye, EyeOff, Loader2, Wand2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import type { Blog } from '../lib/supabase';
 import slugify from 'slugify';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 type BlogFormData = Omit<Blog, 'id' | 'author_id' | 'created_at' | 'updated_at'>;
+
+// Retry configuration
+const MAX_RETRIES = 3;
+const INITIAL_RETRY_DELAY = 1000; // 1 second
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const BlogAdmin = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -16,8 +27,18 @@ const BlogAdmin = () => {
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<BlogFormData>();
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: '',
+    onUpdate: ({ editor }) => {
+      setValue('content', editor.getText());
+    }
+  });
+
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<BlogFormData>();
 
   useEffect(() => {
     fetchBlogs();
@@ -32,9 +53,10 @@ const BlogAdmin = () => {
       setValue('category', editingBlog.category);
       setValue('tags', editingBlog.tags ? editingBlog.tags.join(', ') : '');
       setValue('published', editingBlog.published);
+      editor?.commands.setContent(editingBlog.content);
       setShowForm(true);
     }
-  }, [editingBlog, setValue]);
+  }, [editingBlog, setValue, editor]);
 
   const fetchBlogs = async () => {
     try {
@@ -52,6 +74,86 @@ const BlogAdmin = () => {
     }
   };
 
+  const generateWithRetry = async (model: any, prompt: string, attempt = 1): Promise<any> => {
+    try {
+      const result = await model.generateContent(prompt);
+      setRetryCount(0); // Reset retry count on success
+      return result;
+    } catch (error: any) {
+      if (error.message?.includes('503') && attempt <= MAX_RETRIES) {
+        const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt - 1);
+        console.log(`Retry attempt ${attempt} after ${delay}ms delay`);
+        await sleep(delay);
+        return generateWithRetry(model, prompt, attempt + 1);
+      }
+      throw error;
+    }
+  };
+
+  const generateBlogContent = async () => {
+    const topic = watch('title');
+    if (!topic) {
+      alert('Please enter a topic first');
+      return;
+    }
+
+    setGenerating(true);
+    try {
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+      
+      const prompt = `Write a professional blog post about "${topic}" for a physiotherapy clinic website. Include:
+      1. An engaging introduction
+      2. Key points and explanations
+      3. Professional medical terminology where appropriate
+      4. A conclusion with actionable advice
+      5. Suggest 3-5 relevant tags for the blog post
+      
+      Format the response as JSON with these keys:
+      {
+        "title": "The final title",
+        "excerpt": "A compelling 2-3 sentence summary",
+        "content": "The full blog post content",
+        "tags": ["tag1", "tag2", "tag3"],
+        "category": "The most appropriate category"
+      }`;
+
+      const result = await generateWithRetry(model, prompt);
+      const response = await result.response;
+      const text = response.text();
+      
+      try {
+        // Remove markdown characters and trim whitespace before parsing JSON
+        const cleanedText = text.replace(/```json\n?/g, '').replace(/```/g, '').trim();
+        const blogData = JSON.parse(cleanedText);
+        
+        setValue('title', blogData.title);
+        setValue('excerpt', blogData.excerpt);
+        setValue('content', blogData.content);
+        setValue('category', blogData.category);
+        setValue('tags', blogData.tags.join(', '));
+        editor?.commands.setContent(blogData.content);
+
+        // Generate a relevant image URL with retry mechanism
+        const imagePrompt = `Give me a relevant Unsplash image URL for a blog post about ${topic}. The image should be professional and medical/physiotherapy related. Only return the URL, nothing else.`;
+        const imageResult = await generateWithRetry(model, imagePrompt);
+        const imageUrl = (await imageResult.response).text().trim();
+        setValue('image_url', imageUrl);
+      } catch (error) {
+        console.error('Error parsing AI response:', error);
+        alert('Error parsing AI response. Please try again or fill in the form manually.');
+      }
+    } catch (error: any) {
+      console.error('Error generating blog:', error);
+      if (error.message?.includes('503')) {
+        alert('The AI service is currently experiencing high load. Please try again in a few moments.');
+      } else {
+        alert('Error generating blog content. Please try again or fill in the form manually.');
+      }
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   const onSubmit = async (data: BlogFormData) => {
     setSaving(true);
     try {
@@ -60,15 +162,19 @@ const BlogAdmin = () => {
 
       const slug = slugify(data.title, { lower: true, strict: true });
       
-      // Convert comma-separated tags string to array
+      // Convert comma-separated tags string to array and clean up
       const tagsArray = data.tags 
-        ? (data.tags as string).split(',').map(tag => tag.trim()).filter(Boolean)
+        ? data.tags.split(',')
+            .map(tag => tag.trim())
+            .filter(Boolean)
+            .map(tag => tag.toLowerCase())
         : [];
 
       const blogData = {
         ...data,
         tags: tagsArray,
         slug,
+        content: editor?.getText() || data.content,
         updated_at: new Date().toISOString()
       };
 
@@ -94,6 +200,7 @@ const BlogAdmin = () => {
       reset();
       setShowForm(false);
       setEditingBlog(null);
+      editor?.commands.setContent('');
     } catch (error) {
       console.error('Error saving blog:', error);
       alert('Error saving blog post. Please try again.');
@@ -146,6 +253,7 @@ const BlogAdmin = () => {
             onClick={() => {
               setEditingBlog(null);
               reset();
+              editor?.commands.setContent('');
               setShowForm(!showForm);
             }}
             className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
@@ -164,9 +272,24 @@ const BlogAdmin = () => {
               className="mb-8"
             >
               <div className="bg-white p-6 rounded-xl shadow-lg">
-                <h2 className="text-2xl font-semibold mb-6">
-                  {editingBlog ? 'Edit Blog Post' : 'Create New Blog Post'}
-                </h2>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-semibold">
+                    {editingBlog ? 'Edit Blog Post' : 'Create New Blog Post'}
+                  </h2>
+                  <button
+                    onClick={generateBlogContent}
+                    disabled={generating}
+                    className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                  >
+                    {generating ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <Wand2 className="w-5 h-5" />
+                    )}
+                    {generating ? 'Generating...' : 'Generate with AI'}
+                  </button>
+                </div>
+
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
@@ -217,11 +340,12 @@ const BlogAdmin = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Content
                     </label>
-                    <textarea
-                      {...register('content', { required: 'Content is required' })}
-                      rows={10}
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
-                    />
+                    <div className="prose max-w-none">
+                      <EditorContent 
+                        editor={editor} 
+                        className="min-h-[300px] border rounded-lg p-4 focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
                   </div>
 
                   <div>
@@ -230,7 +354,7 @@ const BlogAdmin = () => {
                     </label>
                     <input
                       {...register('tags')}
-                      placeholder="tag1, tag2, tag3"
+                      placeholder="physiotherapy, rehabilitation, health"
                       className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
                     />
                     <p className="text-sm text-gray-500 mt-1">
@@ -256,6 +380,7 @@ const BlogAdmin = () => {
                         setShowForm(false);
                         setEditingBlog(null);
                         reset();
+                        editor?.commands.setContent('');
                       }}
                       className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
