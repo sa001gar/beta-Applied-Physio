@@ -1,72 +1,68 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Calendar, Clock, Tag, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-import type { Blog } from '../lib/supabase';
-import Breadcrumb from '../components/Breadcrumb';
-import Loader from '../components/Loader';
+"use client"
+
+import { useState, useEffect } from "react"
+import { useParams, Link } from "react-router-dom"
+import { Calendar, Clock, Tag, Share2, ChevronLeft, ChevronRight } from "lucide-react"
+import { supabase } from "../lib/supabase"
+import type { Blog } from "../lib/supabase"
+import Breadcrumb from "../components/Breadcrumb"
+import Loader from "../components/Loader"
 
 const BlogPost = () => {
-  const { id } = useParams();
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [shareSuccess, setShareSuccess] = useState(false);
-  const [relatedPosts, setRelatedPosts] = useState<Blog[]>([]);
+  const { id } = useParams()
+  const [blog, setBlog] = useState<Blog | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [shareSuccess, setShareSuccess] = useState(false)
+  const [relatedPosts, setRelatedPosts] = useState<Blog[]>([])
 
   useEffect(() => {
-    fetchBlog();
-  }, [id]);
+    fetchBlog()
+  }, [id])
 
   const fetchBlog = async () => {
     try {
-      const { data, error } = await supabase
-        .from('blogs')
-        .select('*')
-        .eq('slug', id)
-        .single();
+      const { data, error } = await supabase.from("blogs").select("*").eq("slug", id).single()
 
-      if (error) throw error;
-      setBlog(data);
+      if (error) throw error
+      setBlog(data)
 
       // Fetch related posts
       if (data) {
         const { data: related } = await supabase
-          .from('blogs')
-          .select('*')
-          .neq('id', data.id)
-          .eq('published', true)
-          .eq('category', data.category)
-          .limit(3);
+          .from("blogs")
+          .select("*")
+          .neq("id", data.id)
+          .eq("published", true)
+          .eq("category", data.category)
+          .limit(3)
 
-        setRelatedPosts(related || []);
+        setRelatedPosts(related || [])
       }
     } catch (error) {
-      console.error('Error fetching blog:', error);
+      console.error("Error fetching blog:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleShare = async () => {
-    if (!blog) return;
+    if (!blog) return
 
     const shareData = {
       title: blog.title,
       text: blog.excerpt,
-      url: window.location.href
-    };
+      url: window.location.href,
+    }
 
     try {
-      await navigator.clipboard.writeText(
-        `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`
-      );
-      setShareSuccess(true);
-      setTimeout(() => setShareSuccess(false), 2000);
+      await navigator.clipboard.writeText(`${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`)
+      setShareSuccess(true)
+      setTimeout(() => setShareSuccess(false), 2000)
     } catch (error) {
-      console.error('Error sharing:', error);
-      alert('Unable to share. Please manually copy the URL from your browser.');
+      console.error("Error sharing:", error)
+      alert("Unable to share. Please manually copy the URL from your browser.")
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -75,7 +71,7 @@ const BlogPost = () => {
           <Loader size="large" />
         </div>
       </main>
-    );
+    )
   }
 
   if (!blog) {
@@ -88,20 +84,20 @@ const BlogPost = () => {
           </Link>
         </div>
       </main>
-    );
+    )
   }
 
   return (
     <main className="pt-32 min-h-screen bg-gray-50">
       <Breadcrumb pageName={blog.title} />
-      
+
       <article className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="md:flex">
               <div className="md:w-1/3">
                 <img
-                  src={blog.image_url}
+                  src={blog.image_url || "/placeholder.svg"}
                   alt={blog.title}
                   className="w-full h-[300px] md:h-full object-cover"
                 />
@@ -136,9 +132,7 @@ const BlogPost = () => {
 
             <div className="p-8 border-t border-gray-100">
               <div className="prose max-w-none text-gray-700">
-                <div className="text-lg leading-relaxed whitespace-pre-wrap">
-                  {blog.content}
-                </div>
+                <div className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: blog.content }} />
               </div>
             </div>
 
@@ -150,14 +144,14 @@ const BlogPost = () => {
                     <p className="font-semibold text-gray-900">{blog.category}</p>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={handleShare}
                   className={`flex items-center ${
-                    shareSuccess ? 'text-green-600' : 'text-gray-600'
+                    shareSuccess ? "text-green-600" : "text-gray-600"
                   } hover:text-gray-900 transition-colors`}
                 >
                   <Share2 className="w-5 h-5 mr-2" />
-                  {shareSuccess ? 'Copied!' : 'Share'}
+                  {shareSuccess ? "Copied!" : "Share"}
                 </button>
               </div>
             </div>
@@ -174,7 +168,7 @@ const BlogPost = () => {
                     className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     <img
-                      src={post.image_url}
+                      src={post.image_url || "/placeholder.svg"}
                       alt={post.title}
                       className="w-full h-48 object-cover"
                     />
@@ -189,10 +183,7 @@ const BlogPost = () => {
           )}
 
           <div className="mt-8 flex justify-between">
-            <Link
-              to="/blog"
-              className="flex items-center text-green-600 hover:text-green-700"
-            >
+            <Link to="/blog" className="flex items-center text-green-600 hover:text-green-700">
               <ChevronLeft className="w-5 h-5 mr-1" />
               Back to Blog
             </Link>
@@ -209,7 +200,7 @@ const BlogPost = () => {
         </div>
       </article>
     </main>
-  );
-};
+  )
+}
 
-export default BlogPost;
+export default BlogPost

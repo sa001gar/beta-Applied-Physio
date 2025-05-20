@@ -113,35 +113,62 @@ const BlogAdmin = () => {
 
     // Process paragraphs
     const processedParagraphs = paragraphs.map((paragraph) => {
-      // Handle lists
+      // Handle ordered lists
       if (/^\d+\.\s/.test(paragraph)) {
-        const items = paragraph.split(/\n/).map((item) => item.replace(/^\d+\.\s/, ""))
-        return `<ol>${items.map((item) => `<li>${item}</li>`).join("")}</ol>`
+        const items = paragraph
+          .split(/\n/)
+          .filter(Boolean)
+          .map((item) => item.replace(/^\d+\.\s/, ""))
+        return `<ol>${items.map((item) => `<li>${processInlineFormatting(item)}</li>`).join("")}</ol>`
       }
 
+      // Handle unordered lists
       if (/^[*-]\s/.test(paragraph)) {
-        const items = paragraph.split(/\n/).map((item) => item.replace(/^[*-]\s/, ""))
-        return `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>`
+        const items = paragraph
+          .split(/\n/)
+          .filter(Boolean)
+          .map((item) => item.replace(/^[*-]\s/, ""))
+        return `<ul>${items.map((item) => `<li>${processInlineFormatting(item)}</li>`).join("")}</ul>`
       }
 
       // Handle headings
       if (/^#{1,6}\s/.test(paragraph)) {
-        const level = paragraph.match(/^(#{1,6})\s/)[1].length
-        const content = paragraph.replace(/^#{1,6}\s/, "")
-        return `<h${level}>${content}</h${level}>`
+        const match = paragraph.match(/^(#{1,6})\s/)
+        if (match) {
+          const level = match[1].length
+          const content = paragraph.replace(/^#{1,6}\s/, "")
+          return `<h${level}>${processInlineFormatting(content)}</h${level}>`
+        }
       }
 
-      // Handle bold, italic, and underline formatting
-      const processed = paragraph
-        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\*(.*?)\*/g, "<em>$1</em>")
-        .replace(/__(.*?)__/g, "<u>$1</u>")
-        .replace(/\[(.*?)\]$$(.*?)$$/g, '<a href="$2" target="_blank">$1</a>')
-
-      return `<p>${processed}</p>`
+      // Process regular paragraph with inline formatting
+      return `<p>${processInlineFormatting(paragraph)}</p>`
     })
 
     return processedParagraphs.join("")
+  }
+
+  // Helper function to process inline formatting
+  const processInlineFormatting = (text: string): string => {
+    return (
+      text
+        // Bold: **text** or __text__
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/__(.*?)__/g, "<strong>$1</strong>")
+
+        // Italic: *text* or _text_
+        .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+        .replace(/_([^_]+)_/g, "<em>$1</em>")
+
+        // Underline: ++text++
+        .replace(/\+\+(.*?)\+\+/g, "<u>$1</u>")
+
+        // Links: [text](url)
+        .replace(/\[(.*?)\]$$(.*?)$$/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+
+        // Code: `code`
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+    )
   }
 
   const generateBlogContent = async () => {
