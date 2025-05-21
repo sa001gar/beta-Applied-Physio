@@ -4,10 +4,12 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ['lucide-react']
+    exclude: ['lucide-react'],
+    include: ['tone'],
   },
   build: {
     rollupOptions: {
+      external: ['@tiptap/extension-underline', 'tone'], // <-- Add tone here
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
@@ -30,4 +32,5 @@ export default defineConfig({
     port: 5173
   }
 });
+
 

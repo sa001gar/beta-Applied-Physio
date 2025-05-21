@@ -3,6 +3,7 @@ import { MessageCircle, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clo
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import * as Tone from 'tone';
+// import Tone from 'tone';
 
 export const services = [
   {
