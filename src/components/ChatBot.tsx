@@ -3,7 +3,8 @@ import { MessageCircle, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clo
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 // import * as Tone from 'tone';
-import Tone from 'tone';
+// import Tone from 'tone';
+import { Synth } from 'tone';
 
 export const services = [
   {
@@ -91,7 +92,7 @@ const initialBookingForm: BookingForm = {
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 // Initialize Tone.js synth for audio feedback
-const synth = new Tone.Synth().toDestination();
+const synth = new Synth().toDestination();
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
