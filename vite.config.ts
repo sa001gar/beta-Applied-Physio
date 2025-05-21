@@ -8,6 +8,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+       external: ['@tiptap/extension-underline'],
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
@@ -30,3 +31,4 @@ export default defineConfig({
     port: 5173
   }
 });
+
