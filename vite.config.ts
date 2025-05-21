@@ -9,7 +9,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@tiptap/extension-underline'], // ✅ Removed 'tone'
+      // external: ['@tiptap/extension-underline'], // ✅ Removed 'tone'
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
