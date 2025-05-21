@@ -9,13 +9,13 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@tiptap/extension-underline', 'tone'], // <-- Add tone here
+      external: ['@tiptap/extension-underline'], // ✅ Removed 'tone'
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['lucide-react', 'framer-motion']
-        }
-      }
+          'ui-vendor': ['lucide-react', 'framer-motion'],
+        },
+      },
     },
     chunkSizeWarningLimit: 1000,
     cssCodeSplit: true,
@@ -23,14 +23,12 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true
-      }
-    }
+        drop_debugger: true,
+      },
+    },
   },
   server: {
     open: true,
-    port: 5173
-  }
+    port: 5173,
+  },
 });
-
-
