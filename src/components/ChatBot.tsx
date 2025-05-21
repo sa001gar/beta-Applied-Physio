@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clock, Activity, Dumbbell, Brain, Users, Heart, Stethoscope, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import * as Tone from 'tone';
-// import Tone from 'tone';
+// import * as Tone from 'tone';
+import Tone from 'tone';
 
 export const services = [
   {
