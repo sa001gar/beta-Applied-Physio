@@ -8,7 +8,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-       external: ['@tiptap/extension-underline'],
+      external: ['@tiptap/extension-underline', 'tone'], // <-- Add tone here
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
@@ -31,4 +31,5 @@ export default defineConfig({
     port: 5173
   }
 });
+
 
