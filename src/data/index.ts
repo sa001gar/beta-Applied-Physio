@@ -151,14 +151,14 @@ export const socialLinks = [
     platform: 'Youtube',
     icon: Youtube,
     color: 'bg-red-600',
-    link: 'https://youtube.com/theappliedphysio'
+    link: 'https://www.youtube.com/@TheAppliedPhysio'
   },
-  {
-    platform: 'LinkedIn',
-    icon: Linkedin,
-    color: 'bg-blue-700',
-    link: 'https://linkedin.com/company/theappliedphysio'
-  }
+  // {
+  //   platform: 'LinkedIn',
+  //   icon: Linkedin,
+  //   color: 'bg-blue-700',
+  //   link: 'https://linkedin.com/company/theappliedphysio'
+  // }
 ];
 
 export { services };
