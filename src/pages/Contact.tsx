@@ -242,13 +242,21 @@ const Contact = () => {
                     <p className="font-semibold text-gray-800">Our Locations</p>
                     <div className="mt-2 space-y-4">
                       <p className="text-gray-600">
-                        <span className="font-medium text-green-600">Main Clinic:</span><br />
+                        <span className="font-medium text-green-600">H.O:</span><br />
                         5D/23, SNP, Benachity, Near 54ft Road, Durgapur
                       </p>
-                      <p className="text-gray-600">
-                        <span className="font-medium text-green-600">Branch Office:</span><br />
+                        <p className="text-gray-600">
+                        <span className="font-medium text-green-600">City Centre Clinic:</span><br />
+                        OM Diagnostic, Bengal Ambuja, City Centre, Durgapur
+                        </p>
+                        <p className="text-gray-600">
+                        <span className="font-medium text-green-600">54ft Clinic:</span><br />
                         Bala Medicine Center, 54ft Road, Near NIT Durgapur
-                      </p>
+                        </p>
+                        <p className="text-gray-600">
+                        <span className="font-medium text-green-600">Benachity Clinic:</span><br />
+                        New City Pharmacy, Nachan Road, Benachity, Durgapur
+                        </p>
                     </div>
                   </div>
                 </div>
@@ -258,7 +266,7 @@ const Contact = () => {
                   <div>
                     <p className="font-semibold text-gray-800">Phone</p>
                     <p className="text-gray-600">+91 98001 63749</p>
-                    <p className="text-gray-600">+91 95635 91505</p>
+                    {/* <p className="text-gray-600">+91 95635 91505</p> */}
                   </div>
                 </div>
 
@@ -277,19 +285,19 @@ const Contact = () => {
               <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <Clock className="w-6 h-6 text-green-600 mt-1" />
-                  <div>
-                    <div className="flex justify-between text-gray-600">
-                      <span>Monday - Friday</span>
-                      <span>9:00 AM - 6:00 PM</span>
+                    <div className="space-y-2">
+                    <div className="flex justify-between gap-4 md:gap-16 text-gray-600">
+                      <span>Monday - Saturday</span>
+                      <span>8:00 AM - 8:00 PM</span>
                     </div>
-                    <div className="flex justify-between text-gray-600">
-                      <span>Saturday</span>
-                      <span>10:00 AM - 4:00 PM</span>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
+                    
+                    <div className="flex justify-between gap-4 md:gap-16 text-gray-600">
                       <span>Sunday</span>
-                      <span>Closed</span>
+                      <span>Appointments Only</span>
                     </div>
+                    <span className="font-bold text-green-700 bg-green-50 px-3 py-1 rounded-lg shadow-sm inline-block">
+                      Home Visit / Walk-in Available
+                    </span>
                   </div>
                 </div>
               </div>

@@ -242,8 +242,16 @@ const Contact = () => {
                     <p className="font-semibold text-gray-800">Our Locations</p>
                     <div className="mt-2 space-y-4">
                       <p className="text-gray-600">
-                        <span className="font-medium text-green-600">Main Clinic:</span><br />
+                        <span className="font-medium text-green-600">H.O:</span><br />
                         5D/23, SNP, Benachity, Near 54ft Road, Durgapur
+                      </p>
+                      <p className="text-gray-600">
+                        <span className="font-medium text-green-600">Branch Office:</span><br />
+                        Bala Medicine Center, 54ft Road, Near NIT Durgapur
+                      </p>
+                      <p className="text-gray-600">
+                        <span className="font-medium text-green-600">Branch Office:</span><br />
+                        Bala Medicine Center, 54ft Road, Near NIT Durgapur
                       </p>
                       <p className="text-gray-600">
                         <span className="font-medium text-green-600">Branch Office:</span><br />

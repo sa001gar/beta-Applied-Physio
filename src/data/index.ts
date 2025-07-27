@@ -114,14 +114,24 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: "Dr. S.N. Modak",
-    role: "Senior Physiotherapist",
-    description: "BPT, MPT (Ortho), MIAP (Physio), P.W. Hemophelia from CMC (Vellor).",
+    role: "Sr. Consultant Physiotherapist",
+    description: "BPT, MPT (Ortho), MIAP (Physio), P.W. Hemophelia from CMC (Vellor) with over 28+ years of experience.",
     image: "/images/doctor.jpeg",
     social: {
       linkedin: "#",
       youtube: "#"
     }
   }
+  ,
+    {
+      name: "Dr. Shubhrasuchi Chakraborty",
+      role: "Consultant Physiotherapist",
+      description: "M.P.T, M.I.A.P (SPORTS), Attached with LifeCare Hospital Durgapur and Apollo Clinic Durgapur with over 25+ years of experience.",
+      image: "/images/subhra.jpeg", // Replace with actual image path when available
+      social: {
+        linkedin: "#"
+      }
+    }
 ];
 
 export const socialLinks = [

@@ -3,7 +3,7 @@ const Features = () => {
     <section className="py-12 px-6 bg-white">
       <div className="max-w-4xl mx-auto text-center">
         <h3 className="text-2xl md:text-3xl font-bold text-green-800 mb-6">
-          Why Choose The Applied Physio?
+          Why Choose Applied Physio & Wellness?
         </h3>
         <p className="text-gray-600 mb-6">
           We combine modern techniques with compassionate care to offer exceptional

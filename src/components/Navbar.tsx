@@ -40,7 +40,7 @@ const Navbar = () => {
             to="/" 
             className="text-xl md:text-2xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 text-transparent bg-clip-text whitespace-nowrap hover:opacity-80 transition-opacity"
           >
-            The Applied Physio
+            Applied Physio & Wellness
           </Link>
 
           {/* Desktop Menu */}
