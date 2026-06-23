@@ -88,10 +88,10 @@ const BlogSection = () => {
                 {/* Content */}
                 <div className="p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="bg-green-50 border border-green-100 text-[9px] font-extrabold text-green-700 px-2 py-0.5 rounded-md leading-none uppercase">
+                    <span className="bg-green-50 border border-green-100 text-xs font-extrabold text-green-700 px-2 py-0.5 rounded-md leading-none uppercase">
                       {blog.category}
                     </span>
-                    <span className="text-[10px] text-gray-400 font-bold">
+                    <span className="text-xs text-gray-400 font-bold">
                       {blog.date}
                     </span>
                   </div>
@@ -105,10 +105,10 @@ const BlogSection = () => {
               <div className="p-4 pt-0">
                 <Link
                   to={`/blog/${blog.id}`}
-                  className="inline-flex items-center text-[10px] font-black text-green-700 hover:underline"
+                  className="inline-flex items-center text-xs font-black text-green-700 hover:underline"
                 >
                   <span>Read More</span>
-                  <span className="ml-1 text-[8px] font-extrabold">➜</span>
+                  <span className="ml-1 text-xs font-extrabold">➜</span>
                 </Link>
               </div>
             </motion.div>

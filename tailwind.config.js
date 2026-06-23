@@ -17,6 +17,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'],
+      },
       colors: {
         primary: {
           50: '#f0fdf4',

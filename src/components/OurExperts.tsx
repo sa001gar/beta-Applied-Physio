@@ -74,20 +74,20 @@ const OurExperts = () => {
                   <h3 className="text-base font-extrabold text-gray-900 group-hover:text-green-700 transition-colors leading-tight">
                     {expert.name}
                   </h3>
-                  <p className="text-[10px] font-bold text-gray-400 mt-0.5">
+                  <p className="text-xs font-bold text-gray-400 mt-0.5">
                     {expert.qualifications}
                   </p>
                   
                   {/* Experience Badge */}
-                  <div className="inline-flex items-center gap-1 bg-green-50 border border-green-100/50 px-2.5 py-0.5 rounded-md text-[9px] font-bold text-green-700 mt-2">
+                  <div className="inline-flex items-center gap-1 bg-green-50 border border-green-100/50 px-2.5 py-0.5 rounded-md text-xs font-bold text-green-700 mt-2">
                     <span>{expert.experience}</span>
-                    <span className="text-[7px] font-extrabold">➜</span>
+                    <span className="text-xs font-extrabold">➜</span>
                   </div>
                 </div>
 
                 <div className="border-t border-gray-50 pt-3 space-y-1.5 flex-grow">
                   {expert.specialties.map((spec) => (
-                    <div key={spec} className="flex items-center text-[10px] font-bold text-gray-600 gap-1.5">
+                    <div key={spec} className="flex items-center text-xs font-bold text-gray-600 gap-1.5">
                       <div className="w-3.5 h-3.5 rounded-full bg-green-50 flex items-center justify-center text-green-600 flex-shrink-0">
                         <Check className="w-2.5 h-2.5 stroke-[3]" />
                       </div>
@@ -104,7 +104,7 @@ const OurExperts = () => {
           ))}
         </div>
 
-        <p className="text-center text-[11px] text-gray-400 font-semibold tracking-wide">
+        <p className="text-center text-xs text-gray-400 font-semibold tracking-wide">
           All our physiotherapists are registered and follow the highest standards of clinical practice.
         </p>
       </div>

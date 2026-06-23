@@ -60,14 +60,14 @@ const RecoveryJourney = () => {
                   {/* Step number and text details */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-green-600 text-white flex items-center justify-center text-[10px] font-black leading-none">
+                      <span className="w-5 h-5 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-black leading-none">
                         {step.number}
                       </span>
                       <h4 className="font-extrabold text-sm md:text-base text-gray-800 leading-none">
                         {step.title}
                       </h4>
                     </div>
-                    <p className="text-[11px] md:text-xs text-gray-500 font-bold leading-normal">
+                    <p className="text-xs md:text-xs text-gray-500 font-bold leading-normal">
                       {step.desc}
                     </p>
                   </div>

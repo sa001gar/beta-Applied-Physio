@@ -71,7 +71,7 @@ const AccordionItem = ({ item }: { item: FaqItem }) => {
             exit={{ height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
           >
-            <div className="px-5 pb-4 text-[11px] md:text-xs text-gray-500 font-bold leading-relaxed border-t border-gray-50 pt-2 bg-[#F9FAF9]">
+            <div className="px-5 pb-4 text-xs md:text-xs text-gray-500 font-bold leading-relaxed border-t border-gray-50 pt-2 bg-[#F9FAF9]">
               {item.a}
             </div>
           </motion.div>

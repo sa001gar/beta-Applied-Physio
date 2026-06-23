@@ -28,13 +28,13 @@ const Hero = () => {
             </div>
 
             {/* Custom font and typography */}
-            <h1 className="text-5xl md:text-6xl font-normal text-gray-900 leading-tight instrument-font italic">
+            <h1 className="text-5xl md:text-6xl font-medium text-gray-900 leading-relaxed instrument-font italic">
               Expert Physiotherapy <br className="hidden md:inline" />
               <span className="text-green-600">Care in Durgapur</span>
             </h1>
 
             {/* Subtitle list */}
-            <p className="text-xs md:text-sm font-bold text-gray-700 uppercase tracking-wide">
+            <p className="text-xs md:text-sm uppercase font-bold text-green-800 tracking-wide bg-green-100 rounded-full py-2 px-4 w-fit">
               Pain Relief • Rehabilitation • Sports Injury Recovery • Neurological Physiotherapy
             </p>
 
@@ -87,17 +87,17 @@ const Hero = () => {
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
                 alt="Google"
-                className="w-5 h-5"
+                className="w-8 h-8"
               />
-              <span className="text-sm font-bold text-gray-800">4.9</span>
+              <span className="text-lg font-bold text-gray-800">4.9</span>
               <div className="flex text-yellow-400">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                  <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
               </div>
-              <span className="text-xs text-gray-500 font-bold">(210+ Google Reviews)</span>
+              <span className="text-md text-gray-600 font-medium">(210+ Google Reviews)</span>
             </div>
 
           </div>
@@ -117,11 +117,11 @@ const Hero = () => {
 
               {/* Floating Stats Panel */}
               <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md border border-gray-100 p-4 rounded-xl shadow-lg w-56 z-20 hover:scale-102 transition-transform duration-300">
-                <h3 className="text-2xl font-black text-green-700 leading-none">15+</h3>
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mt-1 leading-tight">Years of Excellence in Physiotherapy</p>
+                <h3 className="text-2xl font-bold text-green-700 leading-none">15+</h3>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-1 leading-tight">Years of Excellence in Physiotherapy</p>
                 <div className="mt-3 border-t border-gray-100 pt-3 space-y-2">
                   {bulletPoints.map((item) => (
-                    <div key={item} className="flex items-center text-[11px] text-gray-700 font-semibold gap-1.5">
+                    <div key={item} className="flex items-center text-xs text-gray-700 font-semibold gap-1.5">
                       <div className="w-3.5 h-3.5 rounded-full bg-green-50 flex items-center justify-center text-green-600 flex-shrink-0">
                         <Check className="w-2.5 h-2.5 stroke-[3]" />
                       </div>
@@ -129,11 +129,7 @@ const Hero = () => {
                     </div>
                   ))}
                 </div>
-                <div className="mt-3 pt-2.5 border-t border-gray-100">
-                  <p className="text-[11px] font-bold text-gray-900 text-center uppercase tracking-wide">
-                    Your Recovery,<br />Our Priority
-                  </p>
-                </div>
+
               </div>
 
             </div>

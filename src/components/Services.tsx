@@ -33,7 +33,7 @@ const Services = () => {
                     <h3 className="font-extrabold text-xs md:text-sm text-green-700 leading-tight">
                       {service.title}
                     </h3>
-                    <p className="text-[10px] md:text-[11px] text-gray-500 font-bold leading-normal mt-1">
+                    <p className="text-xs md:text-xs text-gray-500 font-bold leading-normal mt-1">
                       {service.description}
                     </p>
                   </div>
@@ -42,7 +42,7 @@ const Services = () => {
                 <div className="mt-3 pt-2 border-t border-gray-50">
                   <Link 
                     to={`/services/${service.id}`}
-                    className="inline-flex items-center text-[10px] font-bold text-gray-400 group-hover:text-green-600 transition-colors"
+                    className="inline-flex items-center text-xs font-bold text-gray-400 group-hover:text-green-600 transition-colors"
                   >
                     <span>Learn More</span>
                     <svg className="w-2.5 h-2.5 ml-1 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

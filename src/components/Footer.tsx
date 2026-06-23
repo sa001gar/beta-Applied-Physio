@@ -24,7 +24,7 @@ const Footer = () => {
                 <span className="text-base font-extrabold text-white leading-none tracking-tight">
                   Applied Physio & Wellness
                 </span>
-                <span className="text-[10px] uppercase font-bold text-yellow-300 tracking-wider mt-0.5">
+                <span className="text-xs uppercase font-bold text-yellow-300 tracking-wider mt-0.5">
                   Move Better. Live Better.
                 </span>
               </div>
@@ -111,9 +111,9 @@ const Footer = () => {
                 className="w-full h-full object-cover"
               />
               <div className="absolute top-2 left-2 bg-white text-gray-900 p-2.5 rounded-lg shadow-lg max-w-[170px] z-10 leading-none">
-                <h5 className="text-[10px] font-black leading-tight text-gray-900 truncate">Applied Physio & Wellness</h5>
+                <h5 className="text-xs font-black leading-tight text-gray-900 truncate">Applied Physio & Wellness</h5>
                 <div className="flex items-center gap-1 mt-1">
-                  <span className="text-[9px] font-extrabold text-gray-800">4.9</span>
+                  <span className="text-xs font-extrabold text-gray-800">4.9</span>
                   <div className="flex text-yellow-500">
                     {[...Array(5)].map((_, i) => (
                       <svg key={i} className="w-1.5 h-1.5 fill-current" viewBox="0 0 20 20">
@@ -121,13 +121,13 @@ const Footer = () => {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-[8px] font-bold text-gray-400">(210)</span>
+                  <span className="text-xs font-bold text-gray-400">(210)</span>
                 </div>
                 <a 
                   href="https://maps.google.com" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-[8px] font-extrabold text-blue-600 hover:underline block mt-1.5 uppercase"
+                  className="text-xs font-extrabold text-blue-600 hover:underline block mt-1.5 uppercase"
                 >
                   View larger map
                 </a>
@@ -138,7 +138,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-xs text-gray-400 font-bold uppercase tracking-wider">
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/contact" className="hover:text-white transition-colors">Privacy Policy</Link>
             <span>|</span>

@@ -29,11 +29,6 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const conditionsList = [
-    'Back Pain', 'Lower Back Pain', 'Sciatica', 'Cervical Pain',
-    'Frozen Shoulder', 'Knee Pain', 'Arthritis', 'Sports Injuries',
-    'Tennis Elbow', 'Stroke Rehabilitation', 'Parkinson\'s Rehab', 'Post Surgical Recovery'
-  ];
 
   const servicesList = [
     { name: 'Manual Therapy', id: 'manual' },
@@ -51,38 +46,23 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled 
-        ? 'bg-gradient-to-r from-[#f0fdf4]/95 via-[#fefce8]/95 to-[#f0fdf4]/95 backdrop-blur-md shadow-sm py-2' 
-        : 'bg-transparent py-3'
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled
+      ? 'bg-gradient-to-r from-[#f0fdf4]/95 via-[#fefce8]/95 to-[#f0fdf4]/95 backdrop-blur-md shadow-sm py-4'
+      : 'bg-transparent py-4'
       }`}>
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto px-4 lg:px-8 max-w-[1500px]">
         <div className="flex justify-between items-center">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity">
-            <div className="w-12 h-12 rounded-full bg-white border-[2px] border-green-500 flex items-center justify-center shadow-sm">
-              <svg className="w-7 h-7 text-green-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
-                <path d="M6 12h12" />
-                <path d="M12 8v14" />
-                <path d="m19 15-7-7-7 7" />
-              </svg>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[19px] font-bold text-green-800 leading-tight tracking-tight">
-                Applied Physio & Wellness
-              </span>
-              <span className="text-[11px] font-medium text-gray-500 tracking-wide">
-                Move Better. Live Better.
-              </span>
-            </div>
+            <img src="/images/layout/logo-rect.png" alt="logo" width={240} />
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-8">
             <Link
               to="/"
-              className={`text-[15px] font-bold transition-all pt-1 ${location.pathname === '/'
+              className={`text-base font-bold transition-all pt-1 ${location.pathname === '/'
                 ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
                 : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
                 }`}
@@ -92,7 +72,7 @@ const Navbar = () => {
 
             <Link
               to="/about"
-              className={`text-[15px] font-bold transition-all pt-1 ${location.pathname === '/about'
+              className={`text-base font-bold transition-all pt-1 ${location.pathname === '/about'
                 ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
                 : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
                 }`}
@@ -106,7 +86,7 @@ const Navbar = () => {
               onMouseEnter={() => setActiveDropdown('services')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="flex items-center text-[15px] font-bold text-gray-700 hover:text-green-600 transition-colors gap-1">
+              <button className="flex items-center text-base font-bold text-gray-700 hover:text-green-600 transition-colors gap-1">
                 <span>Services</span>
                 <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-green-600 transition-colors" />
               </button>
@@ -129,7 +109,7 @@ const Navbar = () => {
 
             <Link
               to="/blog"
-              className={`text-[15px] font-bold transition-all pt-1 ${location.pathname.startsWith('/blog')
+              className={`text-base font-bold transition-all pt-1 ${location.pathname.startsWith('/blog')
                 ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
                 : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
                 }`}
@@ -139,7 +119,7 @@ const Navbar = () => {
 
             <Link
               to="/contact"
-              className={`text-[15px] font-bold transition-all pt-1 ${location.pathname === '/contact'
+              className={`text-base font-bold transition-all pt-1 ${location.pathname === '/contact'
                 ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
                 : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
                 }`}
@@ -149,17 +129,17 @@ const Navbar = () => {
           </div>
 
           {/* Book Now & Call action */}
-          <div className="hidden lg:flex flex-row gap-4 items-center">
+          <div className="hidden lg:flex flex-row gap-3 items-center">
             <a
               href="tel:+919808163749"
-              className="flex items-center justify-center bg-white border border-gray-200 px-4 py-2 rounded-xl text-[13px] font-bold text-gray-800 hover:bg-green-50 hover:border-green-200 transition-all gap-2 shadow-sm"
+              className="px-5 py-2.5 text-green-700 border border-green-600/40 hover:border-green-600 hover:bg-green-50/20 rounded-lg transition-all duration-300 font-bold flex items-center space-x-2 transform hover:-translate-y-0.5 text-base"
             >
-              <Phone className="w-4 h-4 text-green-600 fill-current" />
+              <Phone className="w-3.5 h-3.5 text-green-600" />
               <span>+91 98081 63749</span>
             </a>
             <button
               onClick={() => setShowBooking(true)}
-              className="px-6 py-2.5 bg-green-700 hover:bg-green-800 text-white font-bold text-[14px] rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              className="px-6 py-2.5 text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm hover:shadow-green-600/10 transition-all duration-300 flex items-center space-x-2 transform hover:-translate-y-0.5 font-bold text-base"
             >
               Book Appointment
             </button>
@@ -221,15 +201,15 @@ const Navbar = () => {
                 setIsMobileMenuOpen(false);
                 setShowBooking(true);
               }}
-              className="w-full py-3 bg-green-700 hover:bg-green-800 text-white font-bold rounded-xl text-center shadow-md transition-colors text-[15px]"
+              className="w-full py-3 text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-md transition-all duration-300 font-bold text-base"
             >
               Book Appointment
             </button>
             <a
               href="tel:+919808163749"
-              className="flex items-center justify-center bg-gray-50 border border-gray-200 py-3 rounded-xl text-[15px] font-bold text-gray-800 gap-2 hover:bg-green-50 hover:border-green-200 transition-colors shadow-sm"
+              className="flex items-center justify-center w-full py-3 text-green-700 border border-green-600/40 hover:border-green-600 hover:bg-green-50/20 rounded-lg transition-all duration-300 font-bold gap-2 text-base"
             >
-              <Phone className="w-5 h-5 text-green-600 fill-current" />
+              <Phone className="w-4 h-4 text-green-600" />
               <span>+91 98081 63749</span>
             </a>
           </div>

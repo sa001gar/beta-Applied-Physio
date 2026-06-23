@@ -80,7 +80,7 @@ const Testimonials = () => {
                         <h4 className="text-xs font-extrabold text-gray-900 leading-tight">
                           {t.author}
                         </h4>
-                        <p className="text-[10px] text-gray-400 font-bold">
+                        <p className="text-xs text-gray-400 font-bold">
                           {t.location}
                         </p>
                       </div>
