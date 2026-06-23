@@ -50,7 +50,7 @@ export const locations = [
     id: 'main-clinic',
     name: 'Main Clinic - Benachity',
     address: '5D/23, SNP, Benachity, Near 54ft Road, Durgapur',
-    phone: '+91 98001 63749'
+    phone: '+91 98081 63749'
   },
   {
     id: 'branch-office',
@@ -97,7 +97,6 @@ const synth = new Synth().toDestination();
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -124,7 +123,7 @@ const ChatBot = () => {
   // Initialize speech recognition and synthesis
   useEffect(() => {
     // Check for Speech Recognition support
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
@@ -227,20 +226,7 @@ const ChatBot = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  useEffect(() => {
-    if (isMobile) {
-      const handleFocus = () => setIsKeyboardVisible(true);
-      const handleBlur = () => setIsKeyboardVisible(false);
-      
-      inputRef.current?.addEventListener('focus', handleFocus);
-      inputRef.current?.addEventListener('blur', handleBlur);
-      
-      return () => {
-        inputRef.current?.removeEventListener('focus', handleFocus);
-        inputRef.current?.removeEventListener('blur', handleBlur);
-      };
-    }
-  }, [isMobile]);
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -430,7 +416,7 @@ const ChatBot = () => {
         throw new Error('Submission failed');
       }
     } catch (error) {
-      const errorMessage = "I apologize, but there was an error booking your appointment. Please try again or contact us directly at +91 98001 63749.";
+      const errorMessage = "I apologize, but there was an error booking your appointment. Please try again or contact us directly at +91 98081 63749.";
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: errorMessage

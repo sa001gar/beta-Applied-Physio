@@ -13,7 +13,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai"
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY)
 
-type BlogFormData = Omit<Blog, "id" | "author_id" | "created_at" | "updated_at">
+type BlogFormData = Omit<Blog, "id" | "author_id" | "created_at" | "updated_at" | "tags"> & {
+  tags: string;
+}
 
 // Enhanced Quill modules configuration with more professional options
 const quillModules = {
@@ -40,7 +42,7 @@ const INITIAL_RETRY_DELAY = 1000
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // Enhanced reliable image URL generation with multiple fallbacks
-const getReliableImageUrl = (topic: string, category: string): string => {
+const getReliableImageUrl = (_topic: string, category: string): string => {
   // Professional medical images from Unsplash with specific IDs (guaranteed to work)
   const professionalImages = [
     "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=600&fit=crop&crop=center&auto=format&q=80", // Medical professional
@@ -85,7 +87,6 @@ const BlogAdmin = () => {
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [generating, setGenerating] = useState(false)
-  const [retryCount, setRetryCount] = useState(0)
   const [editorContent, setEditorContent] = useState("")
   const [imagePreview, setImagePreview] = useState<string>("")
 
@@ -143,7 +144,6 @@ const BlogAdmin = () => {
   const generateWithRetry = async (model: any, prompt: string, attempt = 1): Promise<any> => {
     try {
       const result = await model.generateContent(prompt)
-      setRetryCount(0)
       return result
     } catch (error: any) {
       if (error.message?.includes("503") && attempt <= MAX_RETRIES) {
@@ -268,7 +268,7 @@ Remember: Return ONLY the JSON object, no other text.`
             setValue("excerpt", fallbackContent.excerpt)
             setValue("content", fallbackContent.content)
             setValue("category", "Wellness")
-            setValue("tags", "physiotherapy", "health", )
+            setValue("tags", "physiotherapy, health")
             setEditorContent(fallbackContent.content)
 
             const imageUrl = getReliableImageUrl(topic, "wellness")
@@ -281,7 +281,7 @@ Remember: Return ONLY the JSON object, no other text.`
           }
         } catch (fallbackError) {
           alert(
-            `❌ Error parsing AI response: ${parseError.message}\n\nPlease try again with a simpler topic or fill in the form manually.`,
+            `❌ Error parsing AI response: ${(parseError as any).message}\n\nPlease try again with a simpler topic or fill in the form manually.`,
           )
         }
       }
@@ -430,7 +430,7 @@ Remember: Return ONLY the JSON object, no other text.`
 
   return (
     <main className="pt-32 pb-16 min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">Blog Management</h1>

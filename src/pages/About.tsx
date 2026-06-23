@@ -31,7 +31,7 @@ const About = () => {
     <main className="pt-20">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-green-50 to-yellow-50 py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-green-800 mb-6">
               Transforming Lives Through Expert Care
@@ -47,7 +47,7 @@ const About = () => {
 
       {/* Stats Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center transform hover:scale-105 transition-transform duration-300">
@@ -64,7 +64,7 @@ const About = () => {
 
       {/* Values Section */}
       <section className="py-20 bg-gradient-to-br from-green-50 to-yellow-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-4xl font-bold text-green-800 mb-6">Our Core Values</h2>
             <p className="text-xl text-gray-600">
@@ -87,7 +87,7 @@ const About = () => {
 
       {/* Team Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-4xl font-bold text-green-800 mb-6">Meet Our Expert Team</h2>
             <p className="text-xl text-gray-600">

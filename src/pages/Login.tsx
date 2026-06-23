@@ -31,7 +31,7 @@ const Login = () => {
 
   return (
     <main className="pt-32 min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center mb-8">

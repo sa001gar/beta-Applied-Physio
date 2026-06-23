@@ -317,7 +317,7 @@ const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
       </div>
       
       {/* Add a global style for the scrollbar */}
-      <style jsx global>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
         }
@@ -332,7 +332,7 @@ const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #84D6AC;
         }
-      `}</style>
+      ` }} />
     </AnimatePresence>
   );
 };

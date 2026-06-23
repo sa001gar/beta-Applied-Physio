@@ -1,4 +1,4 @@
-import { Facebook, Youtube, Instagram, Linkedin, Space as Spa, Dumbbell, Heart, Activity, Brain, UserCog, Stethoscope, Baby, UserPlus } from 'lucide-react';
+import { Facebook, Youtube, Instagram } from 'lucide-react';
 import { services } from './services';
 
 export interface BlogPost {

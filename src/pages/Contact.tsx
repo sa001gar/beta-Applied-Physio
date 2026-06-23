@@ -123,7 +123,7 @@ const Contact = () => {
 
   return (
     <main className="pt-32">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="container mx-auto">
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-green-800 mb-6">Get in Touch</h1>
@@ -265,7 +265,7 @@ const Contact = () => {
                   <Phone className="w-6 h-6 text-green-600 mt-1" />
                   <div>
                     <p className="font-semibold text-gray-800">Phone</p>
-                    <p className="text-gray-600">+91 98001 63749</p>
+                    <p className="text-gray-600">+91 98081 63749</p>
                     {/* <p className="text-gray-600">+91 95635 91505</p> */}
                   </div>
                 </div>

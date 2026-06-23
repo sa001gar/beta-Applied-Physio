@@ -1,175 +1,159 @@
-import { Facebook, Youtube, Instagram, Linkedin, MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Youtube, Linkedin } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { socialLinks } from '../data';
-import { useState } from 'react';
 
 const Footer = () => {
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [subscriptionStatus, setSubscriptionStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          access_key: '662ca92f-e70b-4dac-9fae-03fd5ea922f4',
-          email,
-          subject: 'New Newsletter Subscription',
-          from_name: 'Applied Physio Website Newsletter'
-        })
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setSubscriptionStatus('success');
-        setEmail('');
-      } else {
-        setSubscriptionStatus('error');
-      }
-    } catch (error) {
-      setSubscriptionStatus('error');
-    } finally {
-      setIsSubmitting(false);
-      setTimeout(() => setSubscriptionStatus('idle'), 3000);
-    }
-  };
-
   return (
-    <footer className="bg-gradient-to-br from-green-900 to-green-800 text-white">
-      {/* Main Footer */}
-      <div className="container mx-auto px-4 pt-16 pb-8">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
-          <div className="space-y-4">
-            <Link to="/" className="text-2xl font-bold text-white">
-              Applied Physio & Wellness
+    <footer className="bg-gradient-to-br from-green-900 to-green-800 text-white pt-16 pb-8 border-t border-green-700">
+      <div className="container mx-auto px-4 lg:px-8 max-w-[1500px]">
+        
+        {/* 5-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-12">
+          
+          {/* Column 1: Logo & About (3 cols) */}
+          <div className="lg:col-span-3 space-y-4">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
+                  <path d="M6 12h12" />
+                  <path d="M12 8v14" />
+                  <path d="m19 15-7-7-7 7" />
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-base font-extrabold text-white leading-none tracking-tight">
+                  Applied Physio & Wellness
+                </span>
+                <span className="text-[10px] uppercase font-bold text-yellow-300 tracking-wider mt-0.5">
+                  Move Better. Live Better.
+                </span>
+              </div>
             </Link>
-            <p className="text-gray-300">
-              Professional physiotherapy services for better health and wellness.
+            
+            <p className="text-xs text-gray-300 font-bold leading-relaxed max-w-sm">
+              Leading physiotherapy clinic in Durgapur providing expert care, advanced treatment, and personalized rehabilitation to help you move better and live better.
             </p>
-            <div className="flex space-x-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.platform}
-                  href={social.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-yellow-300 transition-colors"
-                >
-                  <social.icon size={24} />
-                </a>
-              ))}
+            
+            <div className="flex space-x-3 pt-2">
+              <a href="https://facebook.com/theappliedphysio" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-gray-300 hover:text-white transition-colors">
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a href="https://instagram.com/theappliedphysio" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-gray-300 hover:text-white transition-colors">
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a href="https://www.youtube.com/@TheAppliedPhysio" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-gray-300 hover:text-white transition-colors">
+                <Youtube className="w-4 h-4" />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-gray-300 hover:text-white transition-colors">
+                <Linkedin className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-yellow-300">Quick Links</h4>
-            <ul className="space-y-2">
-              {['Home', 'Services', 'About', 'Contact', 'Blog'].map((item) => (
-                <li key={item}>
-                  <Link
-                    to={`/${item.toLowerCase()}`}
-                    className="text-gray-300 hover:text-yellow-300 transition-colors"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
+          {/* Column 2: Quick Links (2 cols) */}
+          <div className="lg:col-span-2 space-y-4">
+            <h4 className="text-xs font-black uppercase text-yellow-300 tracking-widest">Quick Links</h4>
+            <ul className="space-y-2 text-xs text-gray-300 font-bold">
+              <li><Link to="/" className="hover:text-yellow-300 transition-colors">Home</Link></li>
+              <li><Link to="/about" className="hover:text-yellow-300 transition-colors">About Us</Link></li>
+              <li><Link to="/services" className="hover:text-yellow-300 transition-colors">Conditions</Link></li>
+              <li><Link to="/services" className="hover:text-yellow-300 transition-colors">Services</Link></li>
+              <li><Link to="/about" className="hover:text-yellow-300 transition-colors">Our Experts</Link></li>
+              <li><Link to="/blog" className="hover:text-yellow-300 transition-colors">Blog</Link></li>
+              <li><Link to="/contact" className="hover:text-yellow-300 transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-yellow-300">Our Services</h4>
-            <ul className="space-y-2">
-              {[
-                'Manual Therapy',
-                'Sports Rehabilitation',
-                'Physical Therapy',
-                'Ergonomic Care',
-                'Pain Management'
-              ].map((service) => (
-                <li key={service}>
-                  <Link
-                    to="/services"
-                    className="text-gray-300 hover:text-yellow-300 transition-colors"
-                  >
-                    {service}
-                  </Link>
-                </li>
-              ))}
+          {/* Column 3: Our Services (2 cols) */}
+          <div className="lg:col-span-2 space-y-4">
+            <h4 className="text-xs font-black uppercase text-yellow-300 tracking-widest">Our Services</h4>
+            <ul className="space-y-2 text-xs text-gray-300 font-bold">
+              <li><Link to="/services" className="hover:text-yellow-300 transition-colors">Manual Therapy</Link></li>
+              <li><Link to="/services" className="hover:text-yellow-300 transition-colors">Sports Rehabilitation</Link></li>
+              <li><Link to="/services" className="hover:text-yellow-300 transition-colors">Neurological Physiotherapy</Link></li>
+              <li><Link to="/services" className="hover:text-yellow-300 transition-colors">Post Surgical Rehab</Link></li>
+              <li><Link to="/services" className="hover:text-yellow-300 transition-colors">Home Physiotherapy</Link></li>
+              <li><Link to="/services" className="hover:text-yellow-300 transition-colors">Corporate Physiotherapy</Link></li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-yellow-300">Contact Info</h4>
-            <ul className="space-y-4">
-              <li className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-yellow-300 mt-1" />
-                <span className="text-gray-300">
-                  5D/23, SNP, Benachity, Near 54ft Road, Durgapur
-                </span>
+          {/* Column 4: Contact Us (2.5 cols) */}
+          <div className="lg:col-span-2.5 space-y-4">
+            <h4 className="text-xs font-black uppercase text-yellow-300 tracking-widest">Contact Us</h4>
+            <ul className="space-y-3.5 text-xs text-gray-300 font-bold">
+              <li className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-yellow-300 flex-shrink-0 mt-0.5" />
+                <span className="leading-relaxed">5D/22, ENP, Benachity, Near 54ft Road, Durgapur - 713213, West Bengal</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-yellow-300" />
-                <span className="text-gray-300">+91 98001 63749</span>
+              <li className="flex items-center gap-2.5">
+                <Phone className="w-4 h-4 text-yellow-300 flex-shrink-0" />
+                <a href="tel:+919808163749" className="hover:text-yellow-300 transition-colors">+91 98081 63749</a>
               </li>
-              <li className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-yellow-300" />
-                <span className="text-gray-300">contact@appliedphysio.in</span>
+              <li className="flex items-center gap-2.5">
+                <Mail className="w-4 h-4 text-yellow-300 flex-shrink-0" />
+                <a href="mailto:contact@appliedphysio.in" className="hover:text-yellow-300 transition-colors">contact@appliedphysio.in</a>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Clock className="w-4 h-4 text-yellow-300 flex-shrink-0 mt-0.5" />
+                <span className="leading-relaxed">Mon - Sat: 9:00 AM - 8:00 PM<br />Sunday: By Appointment</span>
               </li>
             </ul>
           </div>
-        </div>
 
-        {/* Newsletter */}
-        <div className="border-t border-green-700 pt-8 pb-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h5 className="text-2xl font-semibold mb-4">Stay Updated with Health Tips</h5>
-            <p className="text-gray-300 mb-6">
-              Subscribe to our newsletter for expert advice, health tips, and exclusive updates
-            </p>
-            <form onSubmit={handleNewsletterSubmit} className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full px-4 py-3 rounded-lg bg-green-800 border border-green-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  required
-                />
-                {subscriptionStatus === 'success' && (
-                  <p className="text-green-300 text-sm mt-2">Successfully subscribed!</p>
-                )}
-                {subscriptionStatus === 'error' && (
-                  <p className="text-red-300 text-sm mt-2">Something went wrong. Please try again.</p>
-                )}
+          {/* Column 5: Find Us (2.5 cols) */}
+          <div className="lg:col-span-2.5 space-y-4">
+            <h4 className="text-xs font-black uppercase text-yellow-300 tracking-widest">Find Us</h4>
+            {/* Google Map Mock Card */}
+            <div className="relative rounded-xl overflow-hidden border border-white/10 shadow-md group h-40">
+              <img 
+                src="/images/durgapur_map.png"
+                alt="Clinic Map Location" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute top-2 left-2 bg-white text-gray-900 p-2.5 rounded-lg shadow-lg max-w-[170px] z-10 leading-none">
+                <h5 className="text-[10px] font-black leading-tight text-gray-900 truncate">Applied Physio & Wellness</h5>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-[9px] font-extrabold text-gray-800">4.9</span>
+                  <div className="flex text-yellow-500">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-1.5 h-1.5 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <span className="text-[8px] font-bold text-gray-400">(210)</span>
+                </div>
+                <a 
+                  href="https://maps.google.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-[8px] font-extrabold text-blue-600 hover:underline block mt-1.5 uppercase"
+                >
+                  View larger map
+                </a>
               </div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`px-8 py-3 bg-yellow-500 text-green-900 rounded-lg font-semibold hover:bg-yellow-400 transition-colors ${
-                  isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
-                }`}
-              >
-                {isSubmitting ? 'Subscribing...' : 'Subscribe'}
-              </button>
-            </form>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link to="/contact" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <span>|</span>
+            <Link to="/contact" className="hover:text-white transition-colors">Terms & Conditions</Link>
+            <span>|</span>
+            <Link to="/contact" className="hover:text-white transition-colors">Medical Disclaimer</Link>
+            <span>|</span>
+            <Link to="/contact" className="hover:text-white transition-colors">Website Disclaimer</Link>
+          </div>
+          
+          <div>
+            © {new Date().getFullYear()} Applied Physio & Wellness. All rights reserved.
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="text-center pt-8 border-t border-green-700 mt-8">
-          <p className="text-gray-400">
-            © {new Date().getFullYear()} Applied Physio. All rights reserved.
-          </p>
-        </div>
       </div>
     </footer>
   );

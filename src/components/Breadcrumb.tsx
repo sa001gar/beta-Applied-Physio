@@ -17,7 +17,7 @@ const Breadcrumb = ({ pageName }: BreadcrumbProps) => {
   const pathSegments = location.pathname.split('/').filter(Boolean);
 
   return (
-    <div className="container mx-auto px-4 py-4">
+    <div className="container mx-auto py-4">
       <nav className="flex text-gray-700 text-sm" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-2">
           <li className="inline-flex items-center">

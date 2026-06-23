@@ -27,7 +27,7 @@ const ServiceDetails = () => {
     <main className="min-h-screen pt-32">
       <Breadcrumb pageName={service.title} />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <Link 
           to="/services" 
           className="inline-flex items-center text-green-600 hover:text-green-700 mb-8"

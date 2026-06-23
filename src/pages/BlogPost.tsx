@@ -125,7 +125,7 @@ const BlogPost = () => {
   if (loading) {
     return (
       <main className="pt-32 min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="flex justify-center items-center h-64">
             <Loader size="large" />
           </div>
@@ -137,7 +137,7 @@ const BlogPost = () => {
   if (!blog) {
     return (
       <main className="pt-32 min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 text-center py-16">
+        <div className="container mx-auto text-center py-16">
           <div className="max-w-md mx-auto">
             <h1 className="text-3xl font-bold text-gray-800 mb-4">Blog Post Not Found</h1>
             <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist or has been removed.</p>
@@ -167,7 +167,7 @@ const BlogPost = () => {
       <main className="pt-32 min-h-screen bg-gray-50">
         <Breadcrumb pageName={blog.title} />
 
-        <article className="container mx-auto px-4 py-8">
+        <article className="container mx-auto py-8">
           <div className="max-w-4xl mx-auto">
             {/* Hero Section */}
             <motion.div
@@ -424,7 +424,7 @@ const BlogPost = () => {
         </article>
       </main>
 
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .blog-content h1,
         .blog-content h2,
         .blog-content h3,
@@ -567,7 +567,7 @@ const BlogPost = () => {
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
-      `}</style>
+      ` }} />
     </>
   )
 }

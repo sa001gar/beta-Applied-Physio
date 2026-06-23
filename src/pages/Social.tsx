@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Youtube, Twitter, Share2, ExternalLink, Heart, MessageCircle, Link as LinkIcon } from 'lucide-react';
+import { Share2, Heart, MessageCircle, Link as LinkIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { socialPosts, socialLinks } from '../data';
 
@@ -6,8 +6,8 @@ const Social = () => {
   return (
     <main className="pt-24 min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
       {/* Hero Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-purple-100 to-pink-100">
-        <div className="max-w-6xl mx-auto text-center">
+      <section className="py-16 bg-gradient-to-r from-purple-100 to-pink-100">
+        <div className="container mx-auto text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -48,8 +48,8 @@ const Social = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-16 bg-white">
+        <div className="container mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Our Social Impact</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -74,8 +74,8 @@ const Social = () => {
       </section>
 
       {/* Social Feed */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-16">
+        <div className="container mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Latest Updates</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {socialPosts.map((post, index) => (
