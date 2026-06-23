@@ -1,0 +1,66 @@
+<svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <!-- Soft glowing background radial gradient -->
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#dcfce7" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="primary-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#15803d" />
+      <stop offset="100%" stop-color="#166534" />
+    </linearGradient>
+    <linearGradient id="mint-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#86efac" />
+      <stop offset="100%" stop-color="#22c55e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background glow -->
+  <circle cx="200" cy="200" r="180" fill="url(#glow)" />
+
+  <!-- Outer dashed decorative rings -->
+  <circle cx="200" cy="200" r="160" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="6 8" fill="none"/>
+  <circle cx="200" cy="200" r="130" stroke="#dcfce7" stroke-width="1" stroke-dasharray="2 4" fill="none"/>
+
+  <!-- Dynamic curved lines representing healing energy and flow -->
+  <path d="M 80,240 C 120,280 280,280 320,240" stroke="url(#mint-grad)" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M 100,160 C 150,120 250,120 300,160" stroke="#15803d" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" fill="none"/>
+  <path d="M 60,200 C 100,160 300,240 340,200" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5" />
+
+  <!-- Abstract stylized human silhouette composed of clean vectors -->
+  <!-- Head -->
+  <circle cx="200" cy="110" r="18" fill="url(#primary-grad)" />
+  
+  <!-- Spine / Body Curve (representing perfect posture and spinal health) -->
+  <path d="M 200,128 C 190,160 210,220 200,280" stroke="url(#primary-grad)" stroke-width="8" stroke-linecap="round" fill="none" />
+  
+  <!-- Right Arm in active movement/stretch -->
+  <path d="M 195,145 C 230,135 260,110 280,95" stroke="url(#primary-grad)" stroke-width="5" stroke-linecap="round" fill="none" />
+  <circle cx="280" cy="95" r="5" fill="#4ade80" />
+  
+  <!-- Left Arm representing therapy support -->
+  <path d="M 205,145 C 170,160 150,180 135,210" stroke="url(#primary-grad)" stroke-width="5" stroke-linecap="round" fill="none" />
+  <circle cx="135" cy="210" r="5" fill="#4ade80" />
+
+  <!-- Legs in a sitting/yoga posture representing flexibility and grounding -->
+  <path d="M 200,275 C 160,280 130,290 100,310" stroke="url(#primary-grad)" stroke-width="6" stroke-linecap="round" fill="none" />
+  <path d="M 200,275 C 240,280 270,290 300,310" stroke="url(#primary-grad)" stroke-width="6" stroke-linecap="round" fill="none" />
+
+  <!-- Joint highlights (glowing dots at shoulder, elbow, lower back, knee, representing target treatment areas) -->
+  <!-- Shoulder joint -->
+  <circle cx="200" cy="145" r="8" fill="#86efac" opacity="0.8" />
+  <circle cx="200" cy="145" r="4" fill="#15803d" />
+  
+  <!-- Lower spine / lumbar -->
+  <circle cx="202" cy="225" r="8" fill="#86efac" opacity="0.8" />
+  <circle cx="202" cy="225" r="4" fill="#15803d" />
+
+  <!-- Left knee area -->
+  <circle cx="145" cy="290" r="8" fill="#86efac" opacity="0.8" />
+  <circle cx="145" cy="290" r="4" fill="#15803d" />
+  
+  <!-- Sparkles/Stars showing recovery and pain relief -->
+  <path d="M 310,130 L 315,135 L 320,130 L 315,125 Z" fill="#eab308" />
+  <path d="M 90,170 L 93,173 L 96,170 L 93,167 Z" fill="#eab308" />
+  <path d="M 150,100 L 155,105 L 160,100 L 155,95 Z" fill="#4ade80" />
+</svg>

@@ -1,66 +1,114 @@
 import { motion } from 'framer-motion';
-import { Activity, Brain, Dumbbell, RefreshCw, ShieldAlert, Sparkles, Flame, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const conditions = [
-  { name: 'Back Pain', icon: Flame },
-  { name: 'Lower Back Pain', icon: ShieldAlert },
-  { name: 'Sciatica', icon: Zap },
-  { name: 'Cervical Pain', icon: Sparkles },
-  { name: 'Frozen Shoulder', icon: Dumbbell },
-  { name: 'Knee Pain', icon: Activity },
-  { name: 'Arthritis', icon: Activity },
-  { name: 'Sports Injuries', icon: Dumbbell },
-  { name: 'Tennis Elbow', icon: Activity },
-  { name: 'Stroke Rehabilitation', icon: Brain },
-  { name: 'Parkinson\'s Rehab', icon: Brain },
-  { name: 'Post Surgical Recovery', icon: RefreshCw }
+  { name: 'Back Pain', image: '/images/landing/conditions/back-pain.png' },
+  { name: 'Lower Back Pain', image: '/images/landing/conditions/lower-back-pain.png' },
+  { name: 'Sciatica', image: '/images/landing/conditions/sciatica.png' },
+  { name: 'Cervical Pain', image: '/images/landing/conditions/cervical-pain.png' },
+  { name: 'Frozen Shoulder', image: '/images/landing/conditions/frozen-shoulder.png' },
+  { name: 'Knee Pain', image: '/images/landing/conditions/knee-pain.png' },
+  { name: 'Arthritis', image: '/images/landing/conditions/arthritis.png' },
+  { name: 'Sports Injuries', image: '/images/landing/conditions/sports-injuries.png' },
+  { name: 'Tennis Elbow', image: '/images/landing/conditions/tennis-elbow.png' },
+  { name: 'Stroke Rehab', image: '/images/landing/conditions/stroke-rehab.png' },
+  { name: 'Parkinson\'s', image: '/images/landing/conditions/parkinsons.svg' },
+  { name: 'Post Surgical', image: '/images/landing/conditions/post-surgical.svg' }
 ];
 
 const ConditionsWeTreat = () => {
   return (
-    <section className="py-16 bg-[#F9FAF9]">
+    <section className="py-24 bg-gradient-to-b from-[#f0fdf4]/50 to-white overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8 max-w-[1500px]">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-black text-green-800 mb-3">Conditions We Treat</h2>
-          <p className="text-sm font-bold text-gray-500 max-w-xl mx-auto">
-            Providing effective physiotherapy for a wide range of conditions
-          </p>
-        </div>
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
-          {conditions.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="bg-white border border-gray-100/80 hover:border-green-500/30 p-4 rounded-xl flex items-center space-x-3 shadow-xs hover:shadow-md transition-all duration-300 cursor-default"
+          {/* Left: Illustration and Heading */}
+          <div className="lg:col-span-5 text-center lg:text-left">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              {/* Premium Pill Badge */}
+              <div className="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-full text-xs md:text-sm font-semibold tracking-wide uppercase mb-5 border border-green-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse"></span>
+                <span>Our Clinical Focus</span>
+              </div>
+
+              <h2 className="text-3xl md:text-5xl font-semibold text-green-950 mb-6 leading-tight tracking-tight">
+                Conditions We Treat
+              </h2>
+
+              <p className="text-sm md:text-base font-medium text-gray-600 max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed">
+                We provide highly effective, evidence-based physiotherapy for a wide spectrum of physical conditions, helping you restore mobility, relieve pain, and get back to your active life faster.
+              </p>
+
+              {/* Illustration Image (SVG) */}
+              <div className="relative w-full max-w-md mx-auto lg:mx-0 hidden md:block">
+                <div className="absolute inset-0 bg-green-100 rounded-full blur-3xl opacity-30"></div>
+                <img
+                  src="/images/landing/conditions_illustration.png"
+                  alt="Physiotherapy Healing"
+                  className="relative z-10 w-full h-auto object-contain transform hover:scale-102 transition-transform duration-500 "
+                />
+              </div>
+
+              <div className="mt-8 hidden lg:block">
+                <Link
+                  to="/services"
+                  className="inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white px-7 py-3.5 rounded-lg font-bold shadow-md hover:shadow-green-600/10 transition-all duration-300 transform hover:-translate-y-0.5"
+                >
+                  <span>View All Conditions</span>
+                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right: Grid of conditions */}
+          <div className="lg:col-span-7 relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
+              {conditions.map((item, index) => {
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                    className="group bg-green-100 border border-gray-100 hover:border-green-400 p-5 md:p-6 rounded-2xl flex flex-row items-center gap-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] hover:shadow-2xl hover:shadow-green-950/10 hover:-translate-y-1.5 transition-all duration-300 cursor-default"
+                  >
+                    <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center p-1.5 flex-shrink-0">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <span className="font-extrabold text-gray-900 text-base md:text-lg leading-snug group-hover:text-green-700 transition-colors">
+                      {item.name}
+                    </span>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Mobile/Tablet button fallback */}
+            <div className="mt-8 text-center lg:hidden">
+              <Link
+                to="/services"
+                className="inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white px-7 py-3.5 rounded-lg font-bold shadow-md hover:shadow-green-600/10 transition-all duration-300 transform hover:-translate-y-0.5"
               >
-                <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600 flex-shrink-0">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <span className="font-bold text-gray-800 text-xs md:text-sm leading-tight">
-                  {item.name}
-                </span>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        <div className="text-center">
-          <Link
-            to="/services"
-            className="inline-flex items-center border border-gray-200 bg-white hover:bg-gray-50/50 hover:border-green-600/40 px-6 py-2.5 rounded-full text-green-700 font-bold text-sm shadow-xs transition-colors"
-          >
-            <span>View All Conditions</span>
-            <svg className="w-4 h-4 ml-2 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
+                <span>View All Conditions</span>
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>

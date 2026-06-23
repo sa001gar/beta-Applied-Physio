@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#f0fdf4" opacity="0.6"/>
+  
+  <!-- Outer protecting orbit -->
+  <circle cx="100" cy="100" r="75" stroke="#bbf7d0" stroke-width="2" stroke-dasharray="10 6" fill="none"/>
+  
+  <!-- Shield/Protection Outline -->
+  <path d="M 100,45 C 125,45 150,55 150,85 C 150,125 100,155 100,165 C 100,155 50,125 50,85 C 50,55 75,45 100,45 Z" stroke="#166534" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+  
+  <!-- Medical Cross / Shield Accent -->
+  <path d="M 100,65 L 100,105 M 80,85 L 120,85" stroke="#86efac" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.8"/>
+  
+  <!-- Successful recovery checkmark overlapping -->
+  <path d="M 75,115 L 95,135 L 140,90" stroke="#15803d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Healing energy sparks/orbits -->
+  <path d="M 60,65 A 60,60 0 0 1 140,65" stroke="#22c55e" stroke-width="2.5" stroke-dasharray="4 4" fill="none"/>
+</svg>

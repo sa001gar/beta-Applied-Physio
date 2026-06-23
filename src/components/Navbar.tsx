@@ -62,7 +62,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-8">
             <Link
               to="/"
-              className={`text-base font-bold transition-all pt-1 ${location.pathname === '/'
+              className={`text-base font-semibold transition-all pt-1 ${location.pathname === '/'
                 ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
                 : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
                 }`}
@@ -72,7 +72,7 @@ const Navbar = () => {
 
             <Link
               to="/about"
-              className={`text-base font-bold transition-all pt-1 ${location.pathname === '/about'
+              className={`text-base font-semibold transition-all pt-1 ${location.pathname === '/about'
                 ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
                 : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
                 }`}
@@ -86,7 +86,7 @@ const Navbar = () => {
               onMouseEnter={() => setActiveDropdown('services')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="flex items-center text-base font-bold text-gray-700 hover:text-green-600 transition-colors gap-1">
+              <button className="flex items-center text-base font-semibold text-gray-700 hover:text-green-600 transition-colors gap-1">
                 <span>Services</span>
                 <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-green-600 transition-colors" />
               </button>
@@ -109,7 +109,7 @@ const Navbar = () => {
 
             <Link
               to="/blog"
-              className={`text-base font-bold transition-all pt-1 ${location.pathname.startsWith('/blog')
+              className={`text-base font-semibold transition-all pt-1 ${location.pathname.startsWith('/blog')
                 ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
                 : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
                 }`}
@@ -119,7 +119,7 @@ const Navbar = () => {
 
             <Link
               to="/contact"
-              className={`text-base font-bold transition-all pt-1 ${location.pathname === '/contact'
+              className={`text-base font-semibold transition-all pt-1 ${location.pathname === '/contact'
                 ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
                 : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
                 }`}

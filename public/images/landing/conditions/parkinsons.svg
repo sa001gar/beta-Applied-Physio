@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#f0fdf4" opacity="0.6"/>
+  
+  <!-- Outer Calming Circles for Stability/Balance -->
+  <circle cx="100" cy="100" r="75" stroke="#bbf7d0" stroke-width="2" stroke-dasharray="8 6" fill="none"/>
+  <circle cx="100" cy="100" r="60" stroke="#86efac" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+  
+  <!-- Stylized Brain Lobe Lines representing control -->
+  <path d="M 100,50 C 70,50 55,70 55,95 C 55,115 65,130 80,140 C 90,145 100,152 100,160" stroke="#166534" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M 100,50 C 130,50 145,70 145,95 C 145,115 135,130 120,140 C 110,145 100,152 100,160" stroke="#166534" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M 100,50 L 100,160" stroke="#166534" stroke-width="2.5" stroke-dasharray="3 3" stroke-linecap="round"/>
+  
+  <!-- Central Pulse / Stabilizing Signal -->
+  <circle cx="100" cy="100" r="20" fill="#22c55e" opacity="0.2"/>
+  <circle cx="100" cy="100" r="12" fill="#166534" opacity="0.3"/>
+  <circle cx="100" cy="100" r="6" fill="#15803d"/>
+  
+  <!-- Calming horizontal waves (representing tremor control / smoothing) -->
+  <path d="M 40,100 C 70,85 130,115 160,100" stroke="#22c55e" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M 50,115 C 80,105 120,125 150,115" stroke="#86efac" stroke-width="2" stroke-linecap="round" fill="none"/>
+</svg>
