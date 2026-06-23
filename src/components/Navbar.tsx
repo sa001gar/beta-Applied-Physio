@@ -47,15 +47,15 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled
-      ? 'bg-gradient-to-r from-[#f0fdf4]/95 via-[#fefce8]/95 to-[#f0fdf4]/95 backdrop-blur-md shadow-sm py-4'
-      : 'bg-transparent py-4'
+      ? 'bg-gradient-to-r from-[#f0fdf4]/95 via-[#fefce8]/95 to-[#f0fdf4]/95 backdrop-blur-md shadow-sm py-3'
+      : 'bg-transparent py-3'
       }`}>
       <div className="container mx-auto px-4 lg:px-8 max-w-[1500px]">
         <div className="flex justify-between items-center">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity">
-            <img src="/images/layout/logo-rect.png" alt="logo" width={240} />
+            <img src="/images/layout/logo_logo.png" alt="logo" width={240} />
           </Link>
 
           {/* Desktop Menu */}

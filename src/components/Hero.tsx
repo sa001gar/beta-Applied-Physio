@@ -116,7 +116,7 @@ const Hero = () => {
               />
 
               {/* Floating Stats Panel */}
-              <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md border border-gray-100 p-4 rounded-xl shadow-lg w-56 z-20 hover:scale-102 transition-transform duration-300">
+              <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md border border-gray-100 p-4 rounded-xl shadow-lg w-56 z-20 hover:scale-102 transition-transform duration-300">
                 <h3 className="text-2xl font-bold text-green-700 leading-none">15+</h3>
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-1 leading-tight">Years of Excellence in Physiotherapy</p>
                 <div className="mt-3 border-t border-gray-100 pt-3 space-y-2">
