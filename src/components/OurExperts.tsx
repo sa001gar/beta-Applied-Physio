@@ -15,7 +15,7 @@ const OurExperts = () => {
       <div className="absolute top-0 left-[-10%] w-96 h-96 bg-green-500/[0.02] rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-0 right-[-10%] w-96 h-96 bg-emerald-500/[0.02] rounded-full blur-[100px] pointer-events-none"></div>
 
-      <div className="container mx-auto px-4 lg:px-8 max-w-[1200px] relative z-10">
+      <div className="container mx-auto px-4 lg:px-8 max-w-[1500px] relative z-10">
 
         {/* Section Header */}
         <div className="text-center mb-16">

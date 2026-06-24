@@ -48,17 +48,17 @@ const AccordionItem = ({ item }: { item: FaqItem }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="bg-white border border-gray-100/85 rounded-xl shadow-2xs overflow-hidden transition-all duration-300">
+    <div className="bg-white border border-emerald-950/[0.05] rounded-2xl shadow-[0_8px_30px_rgba(4,32,20,0.02)] overflow-hidden hover:border-emerald-700/20 transition-all duration-300">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-green-50/10 transition-colors"
+        className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#042014]/[0.01] transition-colors"
       >
-        <span className="text-xs md:text-sm font-extrabold text-gray-800 leading-snug">
+        <span className="text-sm md:text-base font-semibold text-[#042014] leading-snug">
           {item.q}
         </span>
         <ChevronDown 
-          className={`w-4 h-4 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ml-4 ${
-            isOpen ? 'rotate-180 text-green-600' : ''
+          className={`w-4 h-4 text-[#042014]/30 transform transition-transform duration-300 flex-shrink-0 ml-4 ${
+            isOpen ? 'rotate-180 text-emerald-700' : ''
           }`}
         />
       </button>
@@ -69,9 +69,9 @@ const AccordionItem = ({ item }: { item: FaqItem }) => {
             initial={{ height: 0 }}
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
           >
-            <div className="px-5 pb-4 text-xs md:text-xs text-gray-500 font-bold leading-relaxed border-t border-gray-50 pt-2 bg-[#F9FAF9]">
+            <div className="px-6 pb-5 text-sm text-gray-500 font-medium leading-relaxed border-t border-gray-100/60 pt-3 bg-white">
               {item.a}
             </div>
           </motion.div>
@@ -83,17 +83,30 @@ const AccordionItem = ({ item }: { item: FaqItem }) => {
 
 const FaqSection = () => {
   return (
-    <section className="py-16 bg-[#F9FAF9]">
-      <div className="container mx-auto px-4 lg:px-8 max-w-[1500px]">
+    <section className="py-24 bg-[#fbfaf7] relative overflow-hidden">
+      
+      {/* Background Decorative Blobs */}
+      <div className="absolute top-0 left-[-10%] w-96 h-96 bg-green-500/[0.01] rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-[-10%] w-96 h-96 bg-emerald-500/[0.01] rounded-full blur-[100px] pointer-events-none"></div>
+
+      <div className="container mx-auto px-4 lg:px-8 max-w-[1500px] relative z-10">
         
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-black text-green-800 mb-3">Frequently Asked Questions</h2>
-          <p className="text-sm font-bold text-gray-500 max-w-xl mx-auto">
-            Providing effective physiotherapy for a wide range of conditions
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-full text-xs md:text-sm font-semibold tracking-wide uppercase mb-5 border border-green-100">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse"></span>
+            <span>Common Queries</span>
+          </div>
+
+          <h2 className="text-3xl md:text-5xl font-semibold text-[#042014] mb-4 leading-none tracking-tight">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-sm md:text-base font-semibold text-gray-500 max-w-xl mx-auto leading-relaxed mt-2">
+            Providing clear answers about clinical processes, home care details, and booking procedures.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[1300px] mx-auto items-start">
           {/* Left Column */}
           <div className="space-y-4">
             {leftFaqs.map((faq) => (

@@ -78,11 +78,11 @@ const steps = [
 
 const RecoveryJourney = () => {
   return (
-    <section className="py-24 bg-amber-100 relative overflow-hidden">
+    <section className="py-24 bg-gradient-to-b from-[#042014] to-[#0b3c25] text-white relative overflow-hidden">
 
       {/* Subtle organic light accent blobs */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-green-100/30 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-100/20 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-0 left-0 w-96 h-96 bg-emerald-500/[0.03] rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-green-500/[0.02] rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="container mx-auto px-4 lg:px-8 max-w-[1500px] relative z-10">
 
@@ -95,17 +95,17 @@ const RecoveryJourney = () => {
             <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-8">
 
               <div className="space-y-6">
-                <div className="inline-flex items-center space-x-2 bg-[#042014]/5 text-[#042014] px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-2">
-                  <Activity className="w-4 h-4 text-emerald-700" />
+                <div className="inline-flex items-center space-x-2 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-2">
+                  <Activity className="w-4 h-4 text-emerald-400" />
                   <span>Our Recovery Pathway</span>
                 </div>
 
-                <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold text-[#042014] tracking-normal leading-[1.1] instrument-font italic">
+                <h2 className="text-4xl md:text-5xl lg:text-7xl font-semibold text-white tracking-wide  instrument-font italic">
                   How we guide <br className="hidden lg:inline" />
                   your recovery?
                 </h2>
 
-                <p className="text-gray-600 text-base md:text-lg max-w-md leading-relaxed">
+                <p className="text-emerald-100/70 text-base md:text-lg max-w-md leading-relaxed">
                   Our clinical method seamlessly combines advanced assessment, precise diagnosis, and modern therapy to restore your strength, mobility, and long-term health.
                 </p>
               </div>
@@ -126,11 +126,11 @@ const RecoveryJourney = () => {
               </motion.div>
 
               <div className="pt-4 hidden lg:block">
-                <div className="w-16 h-[2px] bg-[#042014]/20"></div>
-                <p className="text-md uppercase tracking-widest font-bold text-black mt-4">
+                <div className="w-16 h-[2px] bg-emerald-500/20"></div>
+                <p className="text-md uppercase tracking-widest font-bold text-white mt-4">
                   The Applied Physio
                 </p>
-                <p className="text-sm text-[#042014] mt-2">
+                <p className="text-sm text-emerald-400 mt-2">
                   Best Physio Therapy in Durgapur
                 </p>
               </div>
@@ -141,7 +141,7 @@ const RecoveryJourney = () => {
             <div className="lg:col-span-7 relative pl-8 md:pl-16">
 
               {/* Vertical Timeline line */}
-              <div className="absolute top-6 bottom-6 left-[19px] md:left-[31px] w-[2px] bg-[#042014]/15 pointer-events-none"></div>
+              <div className="absolute top-6 bottom-6 left-[19px] md:left-[31px] w-[2px] bg-white/10 pointer-events-none"></div>
 
               <div className="space-y-8">
                 {steps.map((step, index) => {
@@ -155,10 +155,10 @@ const RecoveryJourney = () => {
                       className="group relative flex flex-col items-start"
                     >
                       {/* Timeline circle node */}
-                      <span className="absolute -left-[27px] md:-left-[43px] top-6 w-4 h-4 md:w-5 md:h-5 rounded-full border-4 border-[#042014] bg-[#faf8f4] z-10 transition-colors duration-300 group-hover:bg-[#adff2f]"></span>
+                      <span className="absolute -left-[27px] md:-left-[43px] top-6 w-4 h-4 md:w-5 md:h-5 rounded-full border-4 border-emerald-800 bg-[#042014] z-10 transition-colors duration-300 group-hover:bg-[#adff2f] group-hover:border-[#adff2f]"></span>
 
                       {/* Card Content */}
-                      <div className="w-full bg-[#042014] hover:bg-[#062c1d] border border-emerald-950/80 rounded-3xl p-6 md:p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300 select-default">
+                      <div className="w-full bg-[#0b3c25]/45 hover:bg-[#0b3c25]/75 border border-emerald-800/40 rounded-3xl p-6 md:p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300 select-default">
 
                         {/* Illustration Container */}
                         <div className="mb-4">
