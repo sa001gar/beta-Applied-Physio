@@ -1,7 +1,18 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
-const blogs = [
+interface HomepageBlog {
+  id: string;
+  category: string;
+  date: string;
+  title: string;
+  excerpt: string;
+  image: string;
+}
+
+const fallbackBlogs: HomepageBlog[] = [
   {
     id: 'back-pain-exercises',
     category: 'Back Pain',
@@ -25,26 +36,53 @@ const blogs = [
     title: 'How Physiotherapy Helps After Knee Replacement',
     excerpt: 'Understand the postoperative rehabilitation timeline, key exercises, and how physiotherapy accelerates your transition back to daily activities.',
     image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=400'
-  },
-  {
-    id: 'sports-injury-timeline',
-    category: 'Sports Injuries',
-    date: 'May 12, 2024',
-    title: 'Sports Injury Recovery Timeline: What to Expect',
-    excerpt: 'A complete phase-by-phase breakdown of sports rehabilitation, from acute swelling management to active performance training.',
-    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&q=80&w=400'
-  },
-  {
-    id: 'stroke-rehab-exercises',
-    category: 'Neurology',
-    date: 'May 10, 2024',
-    title: 'Stroke Rehabilitation Exercises for Daily Life',
-    excerpt: 'Explore neuro-rehabilitation exercises designed to rebuild motor pathways, improve balance, and restore daily functional independence.',
-    image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=400'
   }
 ];
 
 const BlogSection = () => {
+  const [blogs, setBlogs] = useState<HomepageBlog[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecentBlogs = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('id, title, slug, excerpt, image_url, created_at, category')
+          .eq('published', true)
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const mapped = data.map((item) => ({
+            id: item.slug,
+            category: item.category || 'Physiotherapy',
+            date: new Date(item.created_at).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric'
+            }),
+            title: item.title,
+            excerpt: item.excerpt,
+            image: item.image_url
+          }));
+          setBlogs(mapped);
+        } else {
+          setBlogs(fallbackBlogs);
+        }
+      } catch (error) {
+        console.error('Error fetching blogs for homepage:', error);
+        setBlogs(fallbackBlogs);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentBlogs();
+  }, []);
+
   return (
     <section className="py-24 bg-gradient-to-b from-[#042014] to-[#0b3c25] text-white relative overflow-hidden">
 
@@ -82,45 +120,61 @@ const BlogSection = () => {
           </div>
         </div>
 
-        {/* 3-column grid for blogs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {blogs.slice(0, 3).map((blog, index) => (
-            <motion.div
-              key={blog.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group cursor-pointer flex flex-col justify-between"
-            >
-              <Link to={`/blog/${blog.id}`} className="space-y-4">
-                {/* Highly Rounded Image Card */}
-                <div className="rounded-[1.5rem] overflow-hidden aspect-[3/2] bg-[#0b3c25]/30 shadow-xs relative">
-                  <img
-                    src={blog.image}
-                    alt={blog.title}
-                    className="w-full h-full object-cover group-hover:scale-103 transition duration-500 ease-out"
-                  />
+        {/* 3-column grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse space-y-4">
+                <div className="rounded-[1.5rem] bg-[#0b3c25]/50 aspect-[3/2]"></div>
+                <div className="space-y-3">
+                  <div className="h-4 bg-[#0b3c25]/30 rounded w-1/4"></div>
+                  <div className="h-6 bg-[#0b3c25]/30 rounded w-3/4"></div>
+                  <div className="h-4 bg-[#0b3c25]/30 rounded w-full"></div>
+                  <div className="h-4 bg-[#0b3c25]/30 rounded w-5/6"></div>
                 </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {blogs.map((blog, index) => (
+              <motion.div
+                key={blog.id}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group cursor-pointer flex flex-col justify-between"
+              >
+                <Link to={`/blog/${blog.id}`} className="space-y-4">
+                  {/* Highly Rounded Image Card */}
+                  <div className="rounded-[1.5rem] overflow-hidden aspect-[3/2] bg-[#0b3c25]/30 shadow-xs relative">
+                    <img
+                      src={blog.image}
+                      alt={blog.title}
+                      className="w-full h-full object-cover group-hover:scale-103 transition duration-500 ease-out"
+                    />
+                  </div>
 
-                {/* Metadata details flat below image */}
-                <div className="space-y-2">
-                  <span className="text-sm font-medium text-emerald-300/60 block">
-                    {blog.date}
-                  </span>
+                  {/* Metadata details flat below image */}
+                  <div className="space-y-2">
+                    <span className="text-sm font-medium text-emerald-300/60 block">
+                      {blog.date}
+                    </span>
 
-                  <h3 className="font-semibold text-lg md:text-2xl text-white group-hover:text-emerald-300 transition-colors leading-snug">
-                    {blog.title}
-                  </h3>
+                    <h3 className="font-semibold text-lg md:text-2xl text-white group-hover:text-emerald-300 transition-colors leading-snug">
+                      {blog.title}
+                    </h3>
 
-                  <p className="text-sm text-emerald-100/70 font-medium leading-relaxed line-clamp-3">
-                    {blog.excerpt}
-                  </p>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+                    <p className="text-sm text-emerald-100/70 font-medium leading-relaxed line-clamp-3">
+                      {blog.excerpt}
+                    </p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
       </div>
     </section>

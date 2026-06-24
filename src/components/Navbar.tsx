@@ -10,6 +10,22 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<'conditions' | 'services' | null>(null);
   const location = useLocation();
 
+  const isDarkHeaderPage = location.pathname === '/contact';
+  const useLightText = isDarkHeaderPage && !isScrolled;
+
+  const getLinkClass = (path: string, exact = true) => {
+    const isActive = exact ? location.pathname === path : location.pathname.startsWith(path);
+    if (isActive) {
+      return useLightText 
+        ? 'text-emerald-300 border-b-[2.5px] border-emerald-300 pb-1' 
+        : 'text-green-600 border-b-[2.5px] border-green-600 pb-1';
+    } else {
+      return useLightText 
+        ? 'text-white/95 border-b-[2.5px] border-transparent pb-1 hover:text-emerald-300' 
+        : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600';
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -55,27 +71,27 @@ const Navbar = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity -m-2">
-            <img src="/images/layout/logo_final.png" alt="logo" width={260} height={50} className='ml-2' />
+            <img 
+              src="/images/layout/logo_final.png" 
+              alt="logo" 
+              width={260} 
+              height={50} 
+              className={`ml-2 transition-all duration-300 ${useLightText ? 'brightness-0 invert' : ''}`} 
+            />
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-8">
             <Link
               to="/"
-              className={`text-base font-semibold transition-all pt-1 ${location.pathname === '/'
-                ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
-                : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
-                }`}
+              className={`text-base font-semibold transition-all pt-1 ${getLinkClass('/')}`}
             >
               Home
             </Link>
 
             <Link
               to="/about"
-              className={`text-base font-semibold transition-all pt-1 ${location.pathname === '/about'
-                ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
-                : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
-                }`}
+              className={`text-base font-semibold transition-all pt-1 ${getLinkClass('/about')}`}
             >
               About Us
             </Link>
@@ -86,9 +102,13 @@ const Navbar = () => {
               onMouseEnter={() => setActiveDropdown('services')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="flex items-center text-base font-semibold text-gray-700 hover:text-green-600 transition-colors gap-1">
+              <button className={`flex items-center text-base font-semibold transition-colors gap-1 ${
+                useLightText ? 'text-white/95 hover:text-emerald-300' : 'text-gray-700 hover:text-green-600'
+              }`}>
                 <span>Services</span>
-                <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-green-600 transition-colors" />
+                <ChevronDown className={`w-4 h-4 transition-colors ${
+                  useLightText ? 'text-white/60 group-hover:text-emerald-300' : 'text-gray-400 group-hover:text-green-600'
+                }`} />
               </button>
 
               {activeDropdown === 'services' && (
@@ -109,20 +129,14 @@ const Navbar = () => {
 
             <Link
               to="/blog"
-              className={`text-base font-semibold transition-all pt-1 ${location.pathname.startsWith('/blog')
-                ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
-                : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
-                }`}
+              className={`text-base font-semibold transition-all pt-1 ${getLinkClass('/blog', false)}`}
             >
               Blog
             </Link>
 
             <Link
               to="/contact"
-              className={`text-base font-semibold transition-all pt-1 ${location.pathname === '/contact'
-                ? 'text-green-600 border-b-[2.5px] border-green-600 pb-1'
-                : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600'
-                }`}
+              className={`text-base font-semibold transition-all pt-1 ${getLinkClass('/contact')}`}
             >
               Contact
             </Link>
@@ -132,9 +146,13 @@ const Navbar = () => {
           <div className="hidden lg:flex flex-row gap-3 items-center">
             <a
               href="tel:+919808163749"
-              className="px-5 py-2.5 text-green-700 border border-green-600/40 hover:border-green-600 hover:bg-green-50/20 rounded-lg transition-all duration-300 font-bold flex items-center space-x-2 transform hover:-translate-y-0.5 text-base"
+              className={`px-5 py-2.5 border rounded-lg transition-all duration-300 font-bold flex items-center space-x-2 transform hover:-translate-y-0.5 text-base ${
+                useLightText
+                  ? 'text-white border-white/30 hover:border-emerald-300 hover:bg-white/10'
+                  : 'text-green-700 border-green-600/40 hover:border-green-600 hover:bg-green-50/20'
+              }`}
             >
-              <Phone className="w-3.5 h-3.5 text-green-600" />
+              <Phone className={`w-3.5 h-3.5 transition-colors ${useLightText ? 'text-emerald-300' : 'text-green-600'}`} />
               <span>+91 98081 63749</span>
             </a>
             <button
@@ -147,7 +165,11 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden text-gray-700 hover:text-green-700 transition-colors p-2 rounded-lg hover:bg-gray-100"
+            className={`lg:hidden transition-colors p-2 rounded-lg ${
+              useLightText
+                ? 'text-white hover:text-emerald-300 hover:bg-white/5'
+                : 'text-gray-700 hover:text-green-700 hover:bg-gray-100'
+            }`}
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >

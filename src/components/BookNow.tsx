@@ -15,7 +15,6 @@ const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
     phone: '',
     service: defaultService || '',
     location: '',
-    userLocation: '',
     message: ''
   });
 
@@ -23,21 +22,6 @@ const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setFormData(prev => ({
-            ...prev,
-            userLocation: `${latitude},${longitude}`
-          }));
-        },
-        (error) => {
-          console.log('Location access denied or error:', error);
-        }
-      );
-    }
-
     // Reset form when opened with a default service
     if (isOpen && defaultService) {
       setFormData(prev => ({ ...prev, service: defaultService }));
@@ -80,7 +64,6 @@ const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
           phone: '',
           service: defaultService || '',
           location: '',
-          userLocation: '',
           message: ''
         });
         setTimeout(() => {

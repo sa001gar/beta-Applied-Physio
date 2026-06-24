@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, CheckCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -48,29 +48,13 @@ const Contact = () => {
     phone: '',
     service: '',
     location: '',
-    userLocation: '',
     message: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setFormData(prev => ({
-            ...prev,
-            userLocation: `${latitude},${longitude}`
-          }));
-        },
-        (error) => {
-          console.log('Location access denied or error:', error);
-        }
-      );
-    }
-  }, []);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,7 +83,6 @@ const Contact = () => {
           phone: '',
           service: '',
           location: '',
-          userLocation: '',
           message: ''
         });
       } else {

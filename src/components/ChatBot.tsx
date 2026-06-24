@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clock, Activity, Dumbbell, Brain, Users, Heart, Stethoscope, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { MessageSquareText, ChevronUp, X, Send, Loader2, Bot, ChevronRight, LogOut, MapPin, Clock, Activity, Dumbbell, Brain, Users, Heart, Stethoscope, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 // import * as Tone from 'tone';
@@ -91,8 +91,14 @@ const initialBookingForm: BookingForm = {
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
-// Initialize Tone.js synth for audio feedback
-const synth = new Synth().toDestination();
+// Lazy initialization helper for Tone.js synth for audio feedback
+let toneSynth: Synth | null = null;
+const getToneSynth = () => {
+  if (!toneSynth) {
+    toneSynth = new Synth().toDestination();
+  }
+  return toneSynth;
+};
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -113,6 +119,7 @@ const ChatBot = () => {
   const [isVoiceSupported, setIsVoiceSupported] = useState(false);
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
   const [lastTranscript, setLastTranscript] = useState('');
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -147,12 +154,12 @@ const ChatBot = () => {
       recognitionRef.current.onend = () => {
         setIsListening(false);
         // Play end tone
-        synth.triggerAttackRelease("C4", "8n");
+        getToneSynth().triggerAttackRelease("C4", "8n");
       };
 
       recognitionRef.current.onstart = () => {
         // Play start tone
-        synth.triggerAttackRelease("E4", "8n");
+        getToneSynth().triggerAttackRelease("E4", "8n");
       };
     }
 
@@ -189,20 +196,20 @@ const ChatBot = () => {
     if (synthRef.current && !isSpeaking) {
       setIsSpeaking(true);
       const utterance = new SpeechSynthesisUtterance(text);
-      
+
       // Customize voice parameters for more natural speech
       utterance.rate = 1.0; // Normal speed
       utterance.pitch = 1.0; // Normal pitch
       utterance.volume = 1.0; // Full volume
-      
+
       // Get available voices and select a natural-sounding one
       const voices = synthRef.current.getVoices();
-      const preferredVoice = voices.find(voice => 
+      const preferredVoice = voices.find(voice =>
         voice.name.includes('Google') || // Prefer Google voices
         voice.name.includes('Natural') || // Or voices labeled as natural
         voice.name.includes('Female') // Or female voices
       );
-      
+
       if (preferredVoice) {
         utterance.voice = preferredVoice;
       }
@@ -223,10 +230,28 @@ const ChatBot = () => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
-
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -285,13 +310,13 @@ const ChatBot = () => {
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
-    
+
     if (!emailRegex.test(email)) {
       return false;
     }
 
     const [localPart, domain] = email.split('@');
-    
+
     if (localPart.length > 64) {
       return false;
     }
@@ -317,53 +342,53 @@ const ChatBot = () => {
     switch (bookingStep) {
       case 0:
         setBookingForm(prev => ({ ...prev, name: value }));
-        setMessages(prev => [...prev, 
-          { role: 'user', content: value },
-          { role: 'assistant', content: "Please enter your email address:" }
+        setMessages(prev => [...prev,
+        { role: 'user', content: value },
+        { role: 'assistant', content: "Please enter your email address:" }
         ]);
         setBookingStep(1);
         break;
       case 1:
         if (!validateEmail(value)) {
           setMessages(prev => [...prev,
-            { role: 'assistant', content: "Please enter a valid email address (e.g., name@example.com). The email should have a proper domain name with at least two characters after the dot." }
+          { role: 'assistant', content: "Please enter a valid email address (e.g., name@example.com). The email should have a proper domain name with at least two characters after the dot." }
           ]);
           return;
         }
         setBookingForm(prev => ({ ...prev, email: value }));
-        setMessages(prev => [...prev, 
-          { role: 'user', content: value },
-          { role: 'assistant', content: "Please enter your phone number:" }
+        setMessages(prev => [...prev,
+        { role: 'user', content: value },
+        { role: 'assistant', content: "Please enter your phone number:" }
         ]);
         setBookingStep(2);
         break;
       case 2:
         if (!/^\d{10}$/.test(value)) {
           setMessages(prev => [...prev,
-            { role: 'assistant', content: "Please enter a valid 10-digit phone number." }
+          { role: 'assistant', content: "Please enter a valid 10-digit phone number." }
           ]);
           return;
         }
         setBookingForm(prev => ({ ...prev, phone: value }));
-        setMessages(prev => [...prev, 
-          { role: 'user', content: value },
-          { role: 'assistant', content: "Please select a service:" }
+        setMessages(prev => [...prev,
+        { role: 'user', content: value },
+        { role: 'assistant', content: "Please select a service:" }
         ]);
         setBookingStep(3);
         break;
       case 3:
         setBookingForm(prev => ({ ...prev, service: value }));
-        setMessages(prev => [...prev, 
-          { role: 'user', content: value },
-          { role: 'assistant', content: "Please select your preferred location:" }
+        setMessages(prev => [...prev,
+        { role: 'user', content: value },
+        { role: 'assistant', content: "Please select your preferred location:" }
         ]);
         setBookingStep(4);
         break;
       case 4:
         setBookingForm(prev => ({ ...prev, location: value }));
-        setMessages(prev => [...prev, 
-          { role: 'user', content: value },
-          { role: 'assistant', content: "Please enter any additional message or specific requirements:" }
+        setMessages(prev => [...prev,
+        { role: 'user', content: value },
+        { role: 'assistant', content: "Please enter any additional message or specific requirements:" }
         ]);
         setBookingStep(5);
         break;
@@ -377,8 +402,8 @@ const ChatBot = () => {
 
   const handleQuit = () => {
     setMessages(prev => [...prev,
-      { role: 'user', content: 'quit' },
-      { role: 'assistant', content: "Thank you for chatting with me. If you need assistance later, feel free to return. Have a great day! 👋" }
+    { role: 'user', content: 'quit' },
+    { role: 'assistant', content: "Thank you for chatting with me. If you need assistance later, feel free to return. Have a great day! 👋" }
     ]);
     setTimeout(() => {
       setIsOpen(false);
@@ -452,7 +477,7 @@ const ChatBot = () => {
 
     try {
       const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-      
+
       const prompt = `You are a physiotherapy assistant chatbot for Applied Physio clinic. 
       Only answer questions related to physiotherapy, treatments, and our services. 
       If the question is not related to physiotherapy, politely decline to answer and redirect the conversation back to physiotherapy topics.
@@ -564,16 +589,38 @@ const ChatBot = () => {
 
   return (
     <>
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-colors z-50 group"
-        aria-label="Open chat"
-      >
-        <MessageCircle className="w-6 h-6" />
-        <span className="absolute right-full mr-3 bg-white px-3 py-2 rounded-lg shadow-md text-gray-700 text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-          Chat with us
-        </span>
-      </button>
+      {/* Chatbot Toggle Button - Positioned higher */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-24 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-colors z-50 group"
+          aria-label="Open chat"
+        >
+          <MessageSquareText className="w-7 h-7" />
+          <span className="absolute right-full mr-3 bg-white px-3 py-2 rounded-lg shadow-md text-gray-700 text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+            Chat with us
+          </span>
+        </button>
+      )}
+
+      {/* Scroll to Top Button - Positioned at the bottom right */}
+      <AnimatePresence>
+        {showScrollTop && !isOpen && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={scrollToTop}
+            className="fixed bottom-6 right-6 bg-[#042014] hover:bg-emerald-950 text-white p-3.5 rounded-full shadow-lg transition-colors z-50 group border border-emerald-800/40"
+            aria-label="Scroll to top"
+          >
+            <ChevronUp className="w-5.5 h-5.5" />
+            <span className="absolute right-full mr-3 bg-white px-3 py-2 rounded-lg shadow-md text-gray-700 text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+              Scroll to top
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isOpen && (
@@ -584,9 +631,9 @@ const ChatBot = () => {
             exit={isMobile ? { y: '100%' } : { opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className={`fixed z-50 bg-white shadow-2xl flex flex-col
-              ${isMobile 
-                ? 'inset-0' 
-                : 'bottom-24 right-6 w-[400px] h-[600px] max-h-[calc(100vh-8rem)] rounded-2xl overflow-hidden'}`}
+              ${isMobile
+                ? 'inset-0'
+                : 'bottom-6 right-6 w-[400px] h-[600px] max-h-[calc(100vh-4rem)] rounded-2xl overflow-hidden'}`}
           >
             <div className="flex-shrink-0 p-4 bg-green-600 text-white flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -641,11 +688,10 @@ const ChatBot = () => {
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] p-3 rounded-2xl text-sm ${
-                      message.role === 'user'
+                    className={`max-w-[85%] p-3 rounded-2xl text-sm ${message.role === 'user'
                         ? 'bg-green-600 text-white rounded-tr-none'
                         : 'bg-white text-gray-800 shadow-md rounded-tl-none'
-                    }`}
+                      }`}
                   >
                     {message.content}
                   </div>

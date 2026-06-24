@@ -29,7 +29,9 @@ const BlogPost = () => {
   const [blog, setBlog] = useState<Blog | null>(null)
   const [loading, setLoading] = useState(true)
   const [shareSuccess, setShareSuccess] = useState(false)
-  const [relatedPosts, setRelatedPosts] = useState<Blog[]>([])
+  const [relatedPosts, setRelatedPosts] = useState<
+    Pick<Blog, "id" | "title" | "slug" | "excerpt" | "image_url" | "created_at" | "category">[]
+  >([])
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [isLiked, setIsLiked] = useState(false)
   const [readingProgress, setReadingProgress] = useState(0)
@@ -63,17 +65,30 @@ const BlogPost = () => {
       if (error) throw error
       setBlog(data)
 
-      // Fetch related posts
+      // Fetch related posts - same category first, then any published posts as fallback
       if (data) {
         const { data: related } = await supabase
           .from("blogs")
-          .select("*")
+          .select("id, title, slug, excerpt, image_url, created_at, category")
           .neq("id", data.id)
           .eq("published", true)
           .eq("category", data.category)
-          .limit(3)
+          .limit(4)
 
-        setRelatedPosts(related || [])
+        if (related && related.length > 0) {
+          setRelatedPosts(related)
+        } else {
+          // Fallback: fetch any published posts
+          const { data: anyPosts } = await supabase
+            .from("blogs")
+            .select("id, title, slug, excerpt, image_url, created_at, category")
+            .neq("id", data.id)
+            .eq("published", true)
+            .order("created_at", { ascending: false })
+            .limit(4)
+
+          setRelatedPosts(anyPosts || [])
+        }
       }
     } catch (error) {
       console.error("Error fetching blog:", error)
@@ -124,7 +139,7 @@ const BlogPost = () => {
 
   if (loading) {
     return (
-      <main className="pt-32 min-h-screen bg-gray-50">
+      <main className="pt-32 min-h-screen bg-white">
         <div className="container mx-auto">
           <div className="flex justify-center items-center h-64">
             <Loader size="large" />
@@ -136,14 +151,14 @@ const BlogPost = () => {
 
   if (!blog) {
     return (
-      <main className="pt-32 min-h-screen bg-gray-50">
+      <main className="pt-32 min-h-screen bg-white">
         <div className="container mx-auto text-center py-16">
           <div className="max-w-md mx-auto">
-            <h1 className="text-3xl font-bold text-gray-800 mb-4">Blog Post Not Found</h1>
-            <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist or has been removed.</p>
+            <h1 className="text-3xl font-semibold text-gray-800 mb-4">Blog Post Not Found</h1>
+            <p className="text-gray-500 mb-8">The blog post you're looking for doesn't exist or has been removed.</p>
             <Link
               to="/blog"
-              className="inline-flex items-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
+              className="inline-flex items-center bg-green-700 text-white px-6 py-3 rounded-xl hover:bg-green-800 transition-colors font-medium"
             >
               <ChevronLeft className="w-4 h-4 mr-2" />
               Back to Blog
@@ -157,375 +172,411 @@ const BlogPost = () => {
   return (
     <>
       {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+      <div className="fixed top-0 left-0 w-full h-0.5 bg-gray-100 z-50">
         <div
-          className="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all duration-300"
+          className="h-full bg-green-600 transition-all duration-300"
           style={{ width: `${readingProgress}%` }}
         />
       </div>
 
-      <main className="pt-32 min-h-screen bg-gray-50">
+      <main className="pt-32 min-h-screen bg-white">
         <Breadcrumb pageName={blog.title} />
 
-        <article className="container mx-auto py-8">
-          <div className="max-w-4xl mx-auto">
-            {/* Hero Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-8"
-            >
-              {/* Featured Image */}
-              <div className="relative h-[400px] md:h-[500px] overflow-hidden">
-                <img
-                  src={blog.image_url || "/placeholder.svg?height=500&width=800"}
-                  alt={blog.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.src =
-                      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=600&fit=crop&crop=center&auto=format&q=80"
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <article className="py-8">
+          <div className="container mx-auto">
 
-                {/* Category Badge */}
-                <div className="absolute top-6 left-6">
-                  <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-white/90 backdrop-blur-sm text-gray-900">
-                    {blog.category}
-                  </span>
-                </div>
+            {/* Two-column layout: Blog (left) + Related Posts (right) */}
+            <div className=" mx-auto flex flex-col lg:flex-row gap-10">
 
-                {/* Action Buttons */}
-                <div className="absolute top-6 right-6 flex gap-3">
-                  <button
-                    onClick={() => setIsBookmarked(!isBookmarked)}
-                    className={`p-3 rounded-full backdrop-blur-sm transition-all ${
-                      isBookmarked ? "bg-yellow-500 text-white" : "bg-white/90 text-gray-700 hover:bg-white"
-                    }`}
-                  >
-                    <Bookmark className="w-5 h-5" />
-                  </button>
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowShareMenu(!showShareMenu)}
-                      className="p-3 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white transition-all"
-                    >
-                      <Share2 className="w-5 h-5" />
-                    </button>
+              {/* Left Column - Blog Content */}
+              <div className="flex-1 min-w-0">
 
-                    <AnimatePresence>
-                      {showShareMenu && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                          className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 p-2 min-w-[200px] z-10"
-                        >
-                          <button
-                            onClick={() => handleShare("twitter")}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
-                          >
-                            <Twitter className="w-4 h-4 text-blue-400" />
-                            Share on Twitter
-                          </button>
-                          <button
-                            onClick={() => handleShare("facebook")}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
-                          >
-                            <Facebook className="w-4 h-4 text-blue-600" />
-                            Share on Facebook
-                          </button>
-                          <button
-                            onClick={() => handleShare("linkedin")}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
-                          >
-                            <Linkedin className="w-4 h-4 text-blue-700" />
-                            Share on LinkedIn
-                          </button>
-                          <button
-                            onClick={() => handleShare()}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
-                          >
-                            {shareSuccess ? (
-                              <Check className="w-4 h-4 text-green-600" />
-                            ) : (
-                              <Copy className="w-4 h-4 text-gray-600" />
-                            )}
-                            {shareSuccess ? "Copied!" : "Copy Link"}
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
+                {/* Hero Image */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="mb-8"
+                >
+                  <div className="relative overflow-hidden rounded-2xl" style={{ aspectRatio: "3/2" }}>
+                    <img
+                      src={blog.image_url || "/placeholder.svg?height=500&width=800"}
+                      alt={blog.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.src =
+                          "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=800&fit=crop&crop=center&auto=format&q=80"
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
-              {/* Content Header */}
-              <div className="p-8 md:p-12">
-                {/* Meta Information */}
-                <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-6">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>{formatDate(blog.created_at)}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    <span>{getEstimatedReadTime(blog.content)} min read</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4" />
-                    <span>1.2k views</span>
-                  </div>
-                </div>
-
-                {/* Title */}
-                <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">{blog.title}</h1>
-
-                {/* Excerpt */}
-                <p className="text-xl text-gray-600 leading-relaxed mb-8">{blog.excerpt}</p>
-
-                {/* Tags */}
-                {blog.tags && blog.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {blog.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-50 text-green-700 border border-green-200"
-                      >
-                        <Tag className="w-3 h-3 mr-1" />
-                        {tag}
+                    {/* Category Badge */}
+                    <div className="absolute top-5 left-5">
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-white/90 backdrop-blur-sm text-gray-700 shadow-sm">
+                        {blog.category}
                       </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </motion.div>
+                    </div>
 
-            {/* Article Content */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12 mb-8"
-            >
-              <div className="prose prose-lg max-w-none">
-                <div
-                  className="blog-content"
-                  dangerouslySetInnerHTML={{ __html: blog.content }}
-                  style={{
-                    lineHeight: "1.8",
-                    fontSize: "18px",
-                    color: "#374151",
-                  }}
-                />
-              </div>
+                    {/* Action Buttons */}
+                    <div className="absolute top-5 right-5 flex gap-2">
+                      <button
+                        onClick={() => setIsBookmarked(!isBookmarked)}
+                        className={`p-2.5 rounded-xl backdrop-blur-sm transition-all ${isBookmarked ? "bg-yellow-500 text-white" : "bg-white/90 text-gray-600 hover:bg-white"}`}
+                      >
+                        <Bookmark className="w-4 h-4" />
+                      </button>
+                      <div className="relative">
+                        <button
+                          onClick={() => setShowShareMenu(!showShareMenu)}
+                          className="p-2.5 rounded-xl bg-white/90 backdrop-blur-sm text-gray-600 hover:bg-white transition-all"
+                        >
+                          <Share2 className="w-4 h-4" />
+                        </button>
 
-              {/* Article Footer */}
-              <div className="mt-12 pt-8 border-t border-gray-200">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => setIsLiked(!isLiked)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
-                        isLiked
-                          ? "bg-red-50 text-red-600 border border-red-200"
-                          : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
-                      }`}
-                    >
-                      <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
-                      <span>{isLiked ? "Liked" : "Like"}</span>
-                    </button>
-                    <div className="text-sm text-gray-500">
-                      Published in <span className="font-semibold text-gray-700">{blog.category}</span>
+                        <AnimatePresence>
+                          {showShareMenu && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+                              className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-md border border-gray-100 p-1.5 min-w-[180px] z-10"
+                            >
+                              <button
+                                onClick={() => handleShare("twitter")}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left hover:bg-gray-50 rounded-lg transition-colors"
+                              >
+                                <Twitter className="w-4 h-4 text-blue-400" />
+                                Twitter
+                              </button>
+                              <button
+                                onClick={() => handleShare("facebook")}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left hover:bg-gray-50 rounded-lg transition-colors"
+                              >
+                                <Facebook className="w-4 h-4 text-blue-600" />
+                                Facebook
+                              </button>
+                              <button
+                                onClick={() => handleShare("linkedin")}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left hover:bg-gray-50 rounded-lg transition-colors"
+                              >
+                                <Linkedin className="w-4 h-4 text-blue-700" />
+                                LinkedIn
+                              </button>
+                              <button
+                                onClick={() => handleShare()}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left hover:bg-gray-50 rounded-lg transition-colors"
+                              >
+                                {shareSuccess ? (
+                                  <Check className="w-4 h-4 text-green-600" />
+                                ) : (
+                                  <Copy className="w-4 h-4 text-gray-500" />
+                                )}
+                                {shareSuccess ? "Copied!" : "Copy Link"}
+                              </button>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </motion.div>
+                </motion.div>
 
-            {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="mb-8"
-              >
-                <h2 className="text-3xl font-bold text-gray-900 mb-8">Related Articles</h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                  {relatedPosts.map((post, index) => (
-                    <motion.div
-                      key={post.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.1 * index }}
-                    >
-                      <Link
-                        to={`/blog/${post.slug}`}
-                        className="group block bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                      >
-                        <div className="relative h-48 overflow-hidden">
-                          <img
-                            src={post.image_url || "/placeholder.svg?height=200&width=400"}
-                            alt={post.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src =
-                                "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop&crop=center&auto=format&q=80"
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        </div>
-                        <div className="p-6">
-                          <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                            <Calendar className="w-3 h-3" />
-                            <span>{formatDate(post.created_at)}</span>
-                          </div>
-                          <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-green-600 transition-colors">
-                            {post.title}
-                          </h3>
-                          <p className="text-sm text-gray-600 line-clamp-3">{post.excerpt}</p>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Navigation */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white rounded-2xl shadow-lg p-6"
-            >
-              <Link
-                to="/blog"
-                className="flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5" />
-                Back to All Articles
-              </Link>
-              {relatedPosts.length > 0 && (
-                <Link
-                  to={`/blog/${relatedPosts[0].slug}`}
-                  className="flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold transition-colors"
+                {/* Post Header */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="mb-8"
                 >
-                  Next Article
-                  <ChevronRight className="w-5 h-5" />
-                </Link>
-              )}
-            </motion.div>
+                  {/* Meta Information */}
+                  <div className="flex flex-wrap items-center gap-5 text-sm text-gray-400 mb-5">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="w-4 h-4" />
+                      <span>{formatDate(blog.created_at)}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-4 h-4" />
+                      <span>{getEstimatedReadTime(blog.content)} min read</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Eye className="w-4 h-4" />
+                      <span>1.2k views</span>
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 leading-tight mb-5 tracking-tight">
+                    {blog.title}
+                  </h1>
+
+                  {/* Excerpt */}
+                  <p className="text-lg text-gray-500 leading-relaxed mb-6 font-normal">{blog.excerpt}</p>
+
+                  {/* Tags */}
+                  {blog.tags && blog.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {blog.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium bg-green-50 text-green-700"
+                        >
+                          <Tag className="w-3 h-3 mr-1.5" />
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+
+                {/* Divider */}
+                <div className="border-t border-gray-100 mb-8" />
+
+                {/* Article Content */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="mb-10"
+                >
+                  <div className="prose prose-lg max-w-none">
+                    <div
+                      className="blog-content"
+                      dangerouslySetInnerHTML={{ __html: blog.content }}
+                    />
+                  </div>
+
+                  {/* Article Footer */}
+                  <div className="mt-12 pt-8 border-t border-gray-100">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={() => setIsLiked(!isLiked)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${isLiked
+                            ? "bg-red-50 text-red-500 border border-red-100"
+                            : "bg-gray-50 text-gray-500 border border-gray-100 hover:bg-gray-100"
+                            }`}
+                        >
+                          <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
+                          <span>{isLiked ? "Liked" : "Like"}</span>
+                        </button>
+                        <span className="text-sm text-gray-400">
+                          Published in <span className="font-medium text-gray-600">{blog.category}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Navigation */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="flex flex-col sm:flex-row justify-between items-center gap-4 py-6 border-t border-gray-100"
+                >
+                  <Link
+                    to="/blog"
+                    className="flex items-center gap-1.5 text-green-700 hover:text-green-800 font-medium text-sm transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Back to All Articles
+                  </Link>
+                  {relatedPosts.length > 0 && (
+                    <Link
+                      to={`/blog/${relatedPosts[0].slug}`}
+                      className="flex items-center gap-1.5 text-green-700 hover:text-green-800 font-medium text-sm transition-colors"
+                    >
+                      Next Article
+                      <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  )}
+                </motion.div>
+              </div>
+
+              {/* Right Sidebar - Related Posts */}
+              <motion.aside
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="lg:w-[300px] lg:flex-shrink-0"
+              >
+                <div className="lg:sticky lg:top-24">
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-5">Related Articles</h3>
+
+                  {relatedPosts.length > 0 ? (
+                    <div className="space-y-5">
+                      {relatedPosts.map((post, index) => (
+                        <motion.div
+                          key={post.id}
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: 0.1 * index + 0.3 }}
+                        >
+                          <Link
+                            to={`/blog/${post.slug}`}
+                            className="group block rounded-xl border border-gray-100 overflow-hidden hover:shadow-sm transition-all duration-300"
+                          >
+                            <div className="relative overflow-hidden" style={{ aspectRatio: "3/2" }}>
+                              <img
+                                src={post.image_url || "/placeholder.svg?height=200&width=300"}
+                                alt={post.title}
+                                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement
+                                  target.src =
+                                    "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=267&fit=crop&crop=center&auto=format&q=80"
+                                }}
+                              />
+                            </div>
+                            <div className="p-4">
+                              <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-2">
+                                <Calendar className="w-3 h-3" />
+                                <span>{formatDate(post.created_at)}</span>
+                              </div>
+                              <h4 className="font-semibold text-sm text-gray-800 leading-snug group-hover:text-green-700 transition-colors line-clamp-2">
+                                {post.title}
+                              </h4>
+                            </div>
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-400">No related articles yet.</p>
+                  )}
+
+                  {/* Browse all link */}
+                  <div className="mt-6 pt-5 border-t border-gray-100">
+                    <Link
+                      to="/blog"
+                      className="flex items-center gap-1.5 text-sm font-medium text-green-700 hover:text-green-800 transition-colors"
+                    >
+                      View All Articles
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.aside>
+            </div>
+
           </div>
         </article>
       </main>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        .blog-content {
+          line-height: 1.85;
+          font-size: 17px;
+          color: #4b5563;
+        }
+
         .blog-content h1,
         .blog-content h2,
         .blog-content h3,
         .blog-content h4,
         .blog-content h5,
         .blog-content h6 {
-          font-weight: 700;
-          margin-top: 2rem;
-          margin-bottom: 1rem;
+          font-weight: 600;
+          margin-top: 2.25rem;
+          margin-bottom: 0.75rem;
           color: #1f2937;
+          letter-spacing: -0.01em;
         }
 
         .blog-content h1 {
-          font-size: 2.25rem;
-          line-height: 1.2;
+          font-size: 2rem;
+          line-height: 1.25;
         }
 
         .blog-content h2 {
-          font-size: 1.875rem;
+          font-size: 1.625rem;
           line-height: 1.3;
-          border-bottom: 2px solid #e5f4fd;
           padding-bottom: 0.5rem;
+          border-bottom: 1px solid #f3f4f6;
         }
 
         .blog-content h3 {
-          font-size: 1.5rem;
+          font-size: 1.375rem;
           line-height: 1.4;
         }
 
         .blog-content h4 {
-          font-size: 1.25rem;
+          font-size: 1.125rem;
           line-height: 1.5;
         }
 
         .blog-content p {
           margin-bottom: 1.5rem;
-          line-height: 1.8;
+          line-height: 1.85;
         }
 
         .blog-content ul,
         .blog-content ol {
-          margin: 1.5rem 0;
+          margin: 1.25rem 0;
           padding-left: 1.5rem;
         }
 
         .blog-content li {
           margin-bottom: 0.5rem;
-          line-height: 1.7;
+          line-height: 1.75;
         }
 
         .blog-content blockquote {
-          border-left: 4px solid #10b981;
+          border-left: 3px solid #16a34a;
           background: #f0fdf4;
-          padding: 1.5rem;
+          padding: 1.25rem 1.5rem;
           margin: 2rem 0;
           font-style: italic;
           color: #166534;
-          border-radius: 0 8px 8px 0;
+          border-radius: 0 0.75rem 0.75rem 0;
         }
 
         .blog-content img {
           max-width: 100%;
           height: auto;
-          border-radius: 12px;
+          border-radius: 0.75rem;
           margin: 2rem 0;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
         }
 
         .blog-content a {
-          color: #2563eb;
+          color: #16a34a;
           text-decoration: underline;
+          text-decoration-color: #bbf7d0;
+          text-underline-offset: 2px;
           font-weight: 500;
+          transition: text-decoration-color 0.2s;
         }
 
         .blog-content a:hover {
-          color: #1d4ed8;
+          text-decoration-color: #16a34a;
         }
 
         .blog-content strong {
-          font-weight: 700;
-          color: #1e40af;
+          font-weight: 600;
+          color: #1f2937;
         }
 
         .blog-content em {
           font-style: italic;
-          color: #059669;
+          color: #6b7280;
         }
 
         .blog-content code {
-          background: #f1f5f9;
-          padding: 0.25rem 0.5rem;
-          border-radius: 4px;
+          background: #f9fafb;
+          padding: 0.2rem 0.4rem;
+          border-radius: 0.25rem;
           font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
-          font-size: 0.875rem;
+          font-size: 0.85rem;
+          border: 1px solid #f3f4f6;
         }
 
         .blog-content pre {
           background: #1e293b;
           color: #e2e8f0;
           padding: 1.5rem;
-          border-radius: 8px;
+          border-radius: 0.75rem;
           overflow-x: auto;
           margin: 2rem 0;
         }
@@ -535,23 +586,28 @@ const BlogPost = () => {
           border-collapse: collapse;
           margin: 2rem 0;
           background: white;
-          border-radius: 8px;
+          border-radius: 0.75rem;
           overflow: hidden;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+          border: 1px solid #f3f4f6;
         }
 
         .blog-content th {
-          background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-          color: white;
-          padding: 1rem;
+          background: #f9fafb;
+          color: #374151;
+          padding: 0.875rem 1rem;
           font-weight: 600;
           text-align: left;
+          border-bottom: 1px solid #e5e7eb;
         }
 
         .blog-content td {
           padding: 0.875rem 1rem;
-          border-bottom: 1px solid #e5e7eb;
-          color: #374151;
+          border-bottom: 1px solid #f3f4f6;
+          color: #4b5563;
+        }
+
+        .blog-content tr:last-child td {
+          border-bottom: none;
         }
 
         .line-clamp-2 {

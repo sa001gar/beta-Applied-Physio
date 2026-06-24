@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
-import { PlusCircle, Edit, Trash2, Eye, EyeOff, Loader2, Wand2, ImageIcon } from "lucide-react"
+import { PlusCircle, Edit, Trash2, Eye, EyeOff, Loader2, Wand2, Upload, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { supabase } from "../lib/supabase"
 import type { Blog } from "../lib/supabase"
@@ -10,6 +10,7 @@ import slugify from "slugify"
 import ReactQuill from "react-quill"
 import "react-quill/dist/quill.snow.css"
 import { GoogleGenerativeAI } from "@google/generative-ai"
+import ImageCropper from "../components/ImageCropper"
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY)
 
@@ -41,44 +42,6 @@ const INITIAL_RETRY_DELAY = 1000
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// Enhanced reliable image URL generation with multiple fallbacks
-const getReliableImageUrl = (_topic: string, category: string): string => {
-  // Professional medical images from Unsplash with specific IDs (guaranteed to work)
-  const professionalImages = [
-    "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=600&fit=crop&crop=center&auto=format&q=80", // Medical professional
-    "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=1200&h=600&fit=crop&crop=center&auto=format&q=80", // Physiotherapy session
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=600&fit=crop&crop=center&auto=format&q=80", // Healthcare setting
-    "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=1200&h=600&fit=crop&crop=center&auto=format&q=80", // Medical equipment
-    "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&h=600&fit=crop&crop=center&auto=format&q=80", // Wellness/therapy
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=600&fit=crop&crop=center&auto=format&q=80", // Healthcare professional
-    "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=600&fit=crop&crop=center&auto=format&q=80", // Medical consultation
-  ]
-
-  // Category-specific image selection
-  const categoryImages = {
-    "Sports Medicine":
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=600&fit=crop&crop=center&auto=format&q=80",
-    "Pain Management":
-      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=600&fit=crop&crop=center&auto=format&q=80",
-    Rehabilitation:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=1200&h=600&fit=crop&crop=center&auto=format&q=80",
-    Wellness:
-      "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&h=600&fit=crop&crop=center&auto=format&q=80",
-    "Injury Prevention":
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=600&fit=crop&crop=center&auto=format&q=80",
-    "Women's Health":
-      "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=1200&h=600&fit=crop&crop=center&auto=format&q=80",
-    "Pediatric Care":
-      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=600&fit=crop&crop=center&auto=format&q=80",
-  }
-
-  // Return category-specific image or random professional image
-  return (
-    categoryImages[category as keyof typeof categoryImages] ||
-    professionalImages[Math.floor(Math.random() * professionalImages.length)]
-  )
-}
-
 const BlogAdmin = () => {
   const [blogs, setBlogs] = useState<Blog[]>([])
   const [loading, setLoading] = useState(true)
@@ -89,6 +52,10 @@ const BlogAdmin = () => {
   const [generating, setGenerating] = useState(false)
   const [editorContent, setEditorContent] = useState("")
   const [imagePreview, setImagePreview] = useState<string>("")
+  const [showCropper, setShowCropper] = useState(false)
+  const [rawImageSrc, setRawImageSrc] = useState<string>("")
+  const [imageError, setImageError] = useState<string>("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const {
     register,
@@ -117,16 +84,6 @@ const BlogAdmin = () => {
       setShowForm(true)
     }
   }, [editingBlog, setValue])
-
-  // Watch image URL changes for preview
-  useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      if (name === "image_url" && value.image_url) {
-        setImagePreview(value.image_url)
-      }
-    })
-    return () => subscription.unsubscribe()
-  }, [watch])
 
   const fetchBlogs = async () => {
     try {
@@ -165,7 +122,7 @@ const BlogAdmin = () => {
 
     setGenerating(true)
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
 
       // Simplified but powerful prompt that ensures valid JSON response
       const enhancedPrompt = `Create a professional blog post about "${topic}" for a physiotherapy clinic. 
@@ -247,14 +204,9 @@ Remember: Return ONLY the JSON object, no other text.`
         setValue("tags", Array.isArray(blogData.tags) ? blogData.tags.join(", ") : "")
         setEditorContent(blogData.content)
 
-        // Generate reliable image URL
-        const imageUrl = getReliableImageUrl(topic, blogData.category || "healthcare")
-        setValue("image_url", imageUrl)
-        setImagePreview(imageUrl)
-
-        // Success notification
+        // Success notification - remind user to upload an image
         alert(
-          `✅ Blog content generated successfully!\n\n📊 ${blogData.reading_time || "8 min read"}\n📝 ${Math.round(blogData.content.length / 5)} words`,
+          `✅ Blog content generated successfully!\n\n📊 ${blogData.reading_time || "8 min read"}\n📝 ${Math.round(blogData.content.length / 5)} words\n\n📷 Please upload a featured image to complete the post.`,
         )
       } catch (parseError) {
         console.error("JSON parsing error:", parseError)
@@ -271,11 +223,7 @@ Remember: Return ONLY the JSON object, no other text.`
             setValue("tags", "physiotherapy, health")
             setEditorContent(fallbackContent.content)
 
-            const imageUrl = getReliableImageUrl(topic, "wellness")
-            setValue("image_url", imageUrl)
-            setImagePreview(imageUrl)
-
-            alert("✅ Content generated with fallback method!")
+            alert("✅ Content generated with fallback method!\n\n📷 Please upload a featured image.")
           } else {
             throw parseError
           }
@@ -338,15 +286,94 @@ Remember: Return ONLY the JSON object, no other text.`
     }
   }
 
-  const generateNewImage = () => {
-    const topic = watch("title") || "physiotherapy"
-    const category = watch("category") || "healthcare"
-    const newImageUrl = getReliableImageUrl(topic, category)
-    setValue("image_url", newImageUrl)
-    setImagePreview(newImageUrl)
+  // Handle file selection
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setImageError("Please select a valid image file.")
+      return
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setImageError("Image must be smaller than 10MB.")
+      return
+    }
+
+    setImageError("")
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string
+      setRawImageSrc(dataUrl)
+      setShowCropper(true)
+    }
+    reader.readAsDataURL(file)
+
+    // Reset file input so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
+  // Handle crop complete
+  const handleCropComplete = async (croppedDataUrl: string) => {
+    setShowCropper(false)
+    setRawImageSrc("")
+
+    try {
+      // Convert data URL to blob for Supabase upload
+      const response = await fetch(croppedDataUrl)
+      const blob = await response.blob()
+
+      const fileName = `blog-${Date.now()}-${Math.random().toString(36).substring(2, 8)}.jpg`
+      const filePath = `blog-images/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from("blog-images")
+        .upload(filePath, blob, {
+          contentType: "image/jpeg",
+          cacheControl: "3600",
+        })
+
+      if (uploadError) {
+        // If storage upload fails, fall back to using the data URL directly
+        console.warn("Storage upload failed, using data URL:", uploadError.message)
+        setValue("image_url", croppedDataUrl)
+        setImagePreview(croppedDataUrl)
+        return
+      }
+
+      const { data: urlData } = supabase.storage
+        .from("blog-images")
+        .getPublicUrl(filePath)
+
+      setValue("image_url", urlData.publicUrl)
+      setImagePreview(urlData.publicUrl)
+    } catch (err) {
+      // Fallback: use the data URL directly
+      console.warn("Upload failed, using data URL:", err)
+      setValue("image_url", croppedDataUrl)
+      setImagePreview(croppedDataUrl)
+    }
+  }
+
+  const removeImage = () => {
+    setValue("image_url", "")
+    setImagePreview("")
+    setImageError("")
   }
 
   const onSubmit = async (data: BlogFormData) => {
+    // Validate image is provided
+    if (!data.image_url && !imagePreview) {
+      setImageError("Please upload a featured image.")
+      return
+    }
+
     setSaving(true)
     try {
       const user = (await supabase.auth.getUser()).data.user
@@ -356,10 +383,10 @@ Remember: Return ONLY the JSON object, no other text.`
 
       const tagsArray = data.tags
         ? data.tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter(Boolean)
-            .map((tag) => tag.toLowerCase())
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+          .map((tag) => tag.toLowerCase())
         : []
 
       const blogData = {
@@ -367,6 +394,7 @@ Remember: Return ONLY the JSON object, no other text.`
         tags: tagsArray,
         slug,
         content: editorContent,
+        image_url: data.image_url || imagePreview,
         updated_at: new Date().toISOString(),
       }
 
@@ -391,6 +419,7 @@ Remember: Return ONLY the JSON object, no other text.`
       setEditingBlog(null)
       setEditorContent("")
       setImagePreview("")
+      setImageError("")
     } catch (error) {
       console.error("Error saving blog:", error)
       alert("Error saving blog post. Please try again.")
@@ -442,6 +471,7 @@ Remember: Return ONLY the JSON object, no other text.`
               reset()
               setEditorContent("")
               setImagePreview("")
+              setImageError("")
               setShowForm(!showForm)
             }}
             className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
@@ -503,40 +533,79 @@ Remember: Return ONLY the JSON object, no other text.`
                     </div>
                   </div>
 
+                  {/* Featured Image Upload */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Featured Image</label>
-                    <div className="space-y-4">
-                      <div className="flex gap-3">
-                        <input
-                          {...register("image_url", { required: "Image URL is required" })}
-                          className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                          placeholder="Image URL will be generated automatically..."
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      Featured Image <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="hidden"
+                      {...register("image_url", { required: "Featured image is required" })}
+                    />
+
+                    {imagePreview ? (
+                      <div className="relative group">
+                        <img
+                          src={imagePreview}
+                          alt="Featured preview"
+                          className="w-full rounded-xl border border-gray-200 object-cover"
+                          style={{ aspectRatio: "3/2" }}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src =
+                              "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=800&fit=crop&crop=center&auto=format&q=80"
+                          }}
                         />
-                        <button
-                          type="button"
-                          onClick={generateNewImage}
-                          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 transition-colors"
-                        >
-                          <ImageIcon className="w-4 h-4" />
-                          New Image
-                        </button>
-                      </div>
-                      {imagePreview && (
-                        <div className="relative">
-                          <img
-                            src={imagePreview || "/placeholder.svg"}
-                            alt="Preview"
-                            className="w-full h-48 object-cover rounded-xl border border-gray-200"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src =
-                                "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=600&fit=crop&crop=center&auto=format&q=80"
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all duration-200 rounded-xl"></div>
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-200 rounded-xl flex items-center justify-center">
+                          <div className="hidden group-hover:flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => fileInputRef.current?.click()}
+                              className="px-4 py-2 bg-white text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors shadow-md"
+                            >
+                              Replace
+                            </button>
+                            <button
+                              type="button"
+                              onClick={removeImage}
+                              className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-md"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
-                      )}
-                    </div>
+                        <div className="absolute bottom-3 left-3">
+                          <span className="px-2 py-1 bg-black/60 text-white text-xs rounded-md backdrop-blur-sm">3:2</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full border-2 border-dashed border-gray-300 rounded-xl hover:border-green-400 hover:bg-green-50/30 transition-all duration-200 cursor-pointer"
+                        style={{ aspectRatio: "3/1" }}
+                      >
+                        <div className="flex flex-col items-center justify-center h-full py-8">
+                          <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                            <Upload className="w-6 h-6 text-gray-400" />
+                          </div>
+                          <p className="text-sm font-medium text-gray-600 mb-1">Click to upload featured image</p>
+                          <p className="text-xs text-gray-400">Image will be cropped to 3:2 ratio · JPG, PNG, WebP · Max 10MB</p>
+                        </div>
+                      </button>
+                    )}
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+
+                    {(imageError || errors.image_url) && (
+                      <p className="text-red-500 text-sm mt-2">{imageError || errors.image_url?.message}</p>
+                    )}
                   </div>
 
                   <div>
@@ -593,6 +662,7 @@ Remember: Return ONLY the JSON object, no other text.`
                         reset()
                         setEditorContent("")
                         setImagePreview("")
+                        setImageError("")
                       }}
                       className="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
                     >
@@ -649,9 +719,8 @@ Remember: Return ONLY the JSON object, no other text.`
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            blog.published ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"
-                          }`}
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${blog.published ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"
+                            }`}
                         >
                           {blog.published ? "Published" : "Draft"}
                         </span>
@@ -680,9 +749,8 @@ Remember: Return ONLY the JSON object, no other text.`
                     <div className="flex items-center gap-2 ml-4">
                       <button
                         onClick={() => togglePublish(blog)}
-                        className={`p-2 rounded-lg transition-colors ${
-                          blog.published ? "text-green-600 hover:bg-green-50" : "text-gray-400 hover:bg-gray-50"
-                        }`}
+                        className={`p-2 rounded-lg transition-colors ${blog.published ? "text-green-600 hover:bg-green-50" : "text-gray-400 hover:bg-gray-50"
+                          }`}
                         title={blog.published ? "Unpublish" : "Publish"}
                       >
                         {blog.published ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
@@ -714,6 +782,19 @@ Remember: Return ONLY the JSON object, no other text.`
           </div>
         )}
       </div>
+
+      {/* Image Cropper Modal */}
+      {showCropper && rawImageSrc && (
+        <ImageCropper
+          imageSrc={rawImageSrc}
+          aspectRatio={3 / 2}
+          onCropComplete={handleCropComplete}
+          onCancel={() => {
+            setShowCropper(false)
+            setRawImageSrc("")
+          }}
+        />
+      )}
     </main>
   )
 }
