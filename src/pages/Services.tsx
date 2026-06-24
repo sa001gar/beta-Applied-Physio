@@ -9,11 +9,11 @@ interface ServiceData {
   content: string;
 }
 
-const ServiceModal = ({ 
-  service, 
-  isOpen, 
-  onClose 
-}: { 
+const ServiceModal = ({
+  service,
+  isOpen,
+  onClose
+}: {
   service: ServiceData | null;
   isOpen: boolean;
   onClose: () => void;
@@ -23,15 +23,15 @@ const ServiceModal = ({
   return (
     <div className="fixed inset-0 bg-gray-700 bg-opacity-75 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-11/12 md:w-3/5 lg:w-1/2 relative">
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-3 right-3 text-red-500 text-xl hover:text-red-700 transition-colors"
         >
           ✖
         </button>
-        <img 
-          src={service.image} 
-          alt={service.title} 
+        <img
+          src={service.image}
+          alt={service.title}
           className="w-full h-60 object-cover rounded-t-lg"
         />
         <div className="p-6">
@@ -46,18 +46,18 @@ const ServiceModal = ({
   );
 };
 
-const ServiceCard = ({ 
+const ServiceCard = ({
   service,
-  onLearnMore 
-}: { 
+  onLearnMore
+}: {
   service: ServiceData;
   onLearnMore: (service: ServiceData) => void;
 }) => (
   <div className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black opacity-70 z-10"></div>
-    <img 
-      src={service.image} 
-      alt={service.title} 
+    <img
+      src={service.image}
+      alt={service.title}
       className="w-full h-[300px] object-cover transform group-hover:scale-110 transition-transform duration-500"
     />
     <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20">
@@ -65,7 +65,7 @@ const ServiceCard = ({
       <p className="text-gray-200 mb-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
         {service.description}
       </p>
-      <button 
+      <button
         onClick={() => onLearnMore(service)}
         className="inline-flex items-center text-yellow-300 font-semibold hover:text-yellow-400 transition-colors"
       >
@@ -107,7 +107,7 @@ const Services = () => {
   ];
 
   return (
-    <section className={`pt-20 ${location.pathname === '/' ? 'py-12' : 'pt-32'} bg-gradient-to-br from-green-50 to-yellow-50`}>
+    <section className={`pt-32 ${location.pathname === '/' ? 'py-12' : 'pt-32'} bg-gradient-to-br from-green-50 to-yellow-50`}>
       {location.pathname !== '/' && (
         <div className="container mx-auto mb-12 text-center">
           <h1 className="text-5xl font-bold text-green-800 mb-6">Our Services</h1>

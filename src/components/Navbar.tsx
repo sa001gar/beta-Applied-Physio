@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, Phone, ChevronDown } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Menu, X, Phone, ChevronDown, ChevronRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import BookNow from './BookNow';
+import { services } from '../data/services';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<'conditions' | 'services' | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<'services' | null>(null);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
 
-  const isDarkHeaderPage = location.pathname === '/contact';
+  const isDarkHeaderPage = location.pathname === '/contact' || location.pathname === '/about' || location.pathname === '/services' || location.pathname === '/blog';
   const useLightText = isDarkHeaderPage && !isScrolled;
 
   const getLinkClass = (path: string, exact = true) => {
@@ -39,27 +43,35 @@ const Navbar = () => {
   useEffect(() => {
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
+    setMobileServicesOpen(false);
   }, [location]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setActiveDropdown('services');
+  };
 
-  const servicesList = [
-    { name: 'Manual Therapy', id: 'manual' },
-    { name: 'Orthopedic Physiotherapy', id: 'orthopaedic' },
-    { name: 'Sports Rehabilitation', id: 'sports' },
-    { name: 'Neurological Physiotherapy', id: 'neurological' },
-    { name: 'Pediatric Physiotherapy', id: 'pediatric' },
-    { name: 'Geriatric Physiotherapy', id: 'geriatric' },
-    { name: 'Post Surgical Rehab', id: 'post-surgical' },
-    { name: 'Dry Needling', id: 'dry-needling' },
-    { name: 'Electrotherapy', id: 'electrotherapy' },
-    { name: 'Posture Correction', id: 'posture' },
-    { name: 'Home Physiotherapy', id: 'home-physio' },
-    { name: 'Corporate Physiotherapy', id: 'corporate' }
-  ];
+  const handleMouseLeave = () => {
+    // Delay close so user can move to dropdown without it closing
+    timeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 200);
+  };
+
+  // Group services for a 2-column mega menu layout
+  const leftServices = services.slice(0, 6);
+  const rightServices = services.slice(6);
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled
@@ -98,31 +110,67 @@ const Navbar = () => {
 
             {/* Services Dropdown */}
             <div
-              className="relative pt-1 pb-1 group"
-              onMouseEnter={() => setActiveDropdown('services')}
-              onMouseLeave={() => setActiveDropdown(null)}
+              ref={dropdownRef}
+              className="relative pt-1 pb-1"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
-              <button className={`flex items-center text-base font-semibold transition-colors gap-1 ${
-                useLightText ? 'text-white/95 hover:text-emerald-300' : 'text-gray-700 hover:text-green-600'
-              }`}>
+              <Link
+                to="/services"
+                className={`flex items-center text-base font-semibold transition-colors gap-1 ${
+                  location.pathname.startsWith('/services')
+                    ? (useLightText ? 'text-emerald-300' : 'text-green-600')
+                    : (useLightText ? 'text-white/95 hover:text-emerald-300' : 'text-gray-700 hover:text-green-600')
+                }`}
+              >
                 <span>Services</span>
-                <ChevronDown className={`w-4 h-4 transition-colors ${
-                  useLightText ? 'text-white/60 group-hover:text-emerald-300' : 'text-gray-400 group-hover:text-green-600'
-                }`} />
-              </button>
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                  activeDropdown === 'services' ? 'rotate-180' : ''
+                } ${useLightText ? 'text-white/60' : 'text-gray-400'}`} />
+              </Link>
 
+              {/* Mega Dropdown */}
               {activeDropdown === 'services' && (
-                <div className="absolute left-0 mt-3 w-72 bg-white border border-gray-100 rounded-xl shadow-xl py-3 z-50 grid grid-cols-1 gap-1 transform transition-all duration-200 origin-top-left">
-                  {servicesList.map((serv) => (
-                    <Link
-                      key={serv.id}
-                      to={`/services`}
-                      className="px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
-                      onClick={() => setActiveDropdown(null)}
-                    >
-                      {serv.name}
-                    </Link>
-                  ))}
+                <div className="absolute left-1/2 -translate-x-1/2 mt-3 w-[620px] bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  {/* Arrow */}
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 bg-white border-l border-t border-gray-100" />
+
+                  <div className="relative p-2">
+                    <div className="grid grid-cols-2 gap-0.5">
+                      {services.map((serv) => (
+                        <Link
+                          key={serv.id}
+                          to={`/services/${serv.id}`}
+                          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm hover:bg-green-50 transition-colors group/item"
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          <div className="w-9 h-9 rounded-lg bg-emerald-50 border border-emerald-100/60 flex items-center justify-center flex-shrink-0 group-hover/item:bg-emerald-100 transition-colors">
+                            <img
+                              src={`/images/landing/services/${serv.id}.png`}
+                              alt=""
+                              className="w-5 h-5 object-contain"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <span className="font-semibold text-gray-800 group-hover/item:text-green-700 transition-colors block truncate">{serv.title}</span>
+                            <span className="text-xs text-gray-400 block truncate">{serv.description}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+
+                    {/* Footer link */}
+                    <div className="mt-1 pt-2 border-t border-gray-100">
+                      <Link
+                        to="/services"
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-green-700 hover:text-green-800 hover:bg-green-50 rounded-xl transition-colors"
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        View All Services
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -180,38 +228,64 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 py-4 px-6 space-y-4 shadow-lg absolute top-full left-0 w-full z-45">
+        <div className="lg:hidden bg-white border-t border-gray-100 py-4 px-6 space-y-1 shadow-lg absolute top-full left-0 w-full z-45">
           <Link
             to="/"
-            className="block font-semibold text-gray-700 hover:text-green-600 py-2"
+            className="block font-semibold text-gray-700 hover:text-green-600 py-2.5 px-2 rounded-lg hover:bg-green-50/50 transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Home
           </Link>
           <Link
             to="/about"
-            className="block font-semibold text-gray-700 hover:text-green-600 py-2"
+            className="block font-semibold text-gray-700 hover:text-green-600 py-2.5 px-2 rounded-lg hover:bg-green-50/50 transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             About Us
           </Link>
-          <Link
-            to="/services"
-            className="block font-semibold text-gray-700 hover:text-green-600 py-2"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Services
-          </Link>
+
+          {/* Mobile Services Accordion */}
+          <div>
+            <button
+              onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+              className="w-full flex items-center justify-between font-semibold text-gray-700 py-2.5 px-2 rounded-lg hover:bg-green-50/50 transition-colors"
+            >
+              <span>Services</span>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {mobileServicesOpen && (
+              <div className="ml-2 mt-1 space-y-0.5 border-l-2 border-green-100 pl-3">
+                {services.map((serv) => (
+                  <Link
+                    key={serv.id}
+                    to={`/services/${serv.id}`}
+                    className="block text-sm font-medium text-gray-600 hover:text-green-700 py-2 px-2 rounded-lg hover:bg-green-50/50 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {serv.title}
+                  </Link>
+                ))}
+                <Link
+                  to="/services"
+                  className="block text-sm font-semibold text-green-700 py-2 px-2 rounded-lg hover:bg-green-50/50 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  View All Services →
+                </Link>
+              </div>
+            )}
+          </div>
+
           <Link
             to="/blog"
-            className="block font-semibold text-gray-700 hover:text-green-600 py-2"
+            className="block font-semibold text-gray-700 hover:text-green-600 py-2.5 px-2 rounded-lg hover:bg-green-50/50 transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Blog
           </Link>
           <Link
             to="/contact"
-            className="block font-semibold text-gray-700 hover:text-green-600 py-2"
+            className="block font-semibold text-gray-700 hover:text-green-600 py-2.5 px-2 rounded-lg hover:bg-green-50/50 transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Contact

@@ -26,6 +26,11 @@ const RecoveryJourney = lazy(() => import('./components/RecoveryJourney'));
 const BlogSection = lazy(() => import('./components/BlogSection'));
 const FaqSection = lazy(() => import('./components/FaqSection'));
 
+// Legal pages
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsConditions = lazy(() => import('./pages/TermsConditions'));
+const MedicalDisclaimer = lazy(() => import('./pages/MedicalDisclaimer'));
+const WebsiteDisclaimer = lazy(() => import('./pages/WebsiteDisclaimer'));
 // ScrollToTop component
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -104,6 +109,13 @@ function App() {
               }
             />
             <Route path="/social" element={<Social />} />
+            
+            {/* Legal Pages */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-conditions" element={<TermsConditions />} />
+            <Route path="/medical-disclaimer" element={<MedicalDisclaimer />} />
+            <Route path="/website-disclaimer" element={<WebsiteDisclaimer />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

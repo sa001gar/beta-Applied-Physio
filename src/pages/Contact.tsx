@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { MapPin, Phone, Mail, Clock, CheckCircle, X, Calendar, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Breadcrumb from '../components/Breadcrumb';
 
 const SuccessModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   if (!isOpen) return null;
@@ -201,12 +202,15 @@ const Contact = () => {
     <main className="min-h-screen bg-white">
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-[#042014] to-[#0b3c25] text-white pt-40 pb-36 relative overflow-hidden">
+      <section className="bg-gradient-to-b from-[#042014] to-[#0b3c25] text-white pt-32 pb-36 relative overflow-hidden">
         {/* Decorative blobs */}
         <div className="absolute top-0 right-[-10%] w-96 h-96 bg-emerald-500/[0.05] rounded-full blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-green-500/[0.04] rounded-full blur-[100px] pointer-events-none"></div>
 
         <div className="container mx-auto px-4 max-w-[1300px] text-center relative z-10">
+          <div className="flex justify-center w-full">
+            <Breadcrumb theme="dark" pageName="Contact Us" />
+          </div>
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}

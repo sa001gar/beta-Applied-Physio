@@ -179,17 +179,17 @@ const BlogPost = () => {
         />
       </div>
 
-      <main className="pt-32 min-h-screen bg-white">
+      <main className="pt-24 min-h-screen bg-white">
         <Breadcrumb pageName={blog.title} />
 
         <article className="py-8">
           <div className="container mx-auto">
 
-            {/* Two-column layout: Blog (left) + Related Posts (right) */}
-            <div className=" mx-auto flex flex-col lg:flex-row gap-10">
+            {/* Two-column layout: Blog (left) + Sidebar (right) */}
+            <div className="mx-auto grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-0">
 
               {/* Left Column - Blog Content */}
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 lg:pr-10">
 
                 {/* Hero Image */}
                 <motion.div
@@ -394,60 +394,134 @@ const BlogPost = () => {
                 </motion.div>
               </div>
 
-              {/* Right Sidebar - Related Posts */}
+              {/* Right Sidebar */}
               <motion.aside
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="lg:w-[300px] lg:flex-shrink-0"
+                className="hidden lg:block border-l border-gray-100 pl-10"
               >
-                <div className="lg:sticky lg:top-24">
-                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-5">Related Articles</h3>
+                <div className="sticky top-24 space-y-8">
 
-                  {relatedPosts.length > 0 ? (
-                    <div className="space-y-5">
-                      {relatedPosts.map((post, index) => (
-                        <motion.div
-                          key={post.id}
-                          initial={{ opacity: 0, y: 12 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: 0.1 * index + 0.3 }}
-                        >
-                          <Link
-                            to={`/blog/${post.slug}`}
-                            className="group block rounded-xl border border-gray-100 overflow-hidden hover:shadow-sm transition-all duration-300"
-                          >
-                            <div className="relative overflow-hidden" style={{ aspectRatio: "3/2" }}>
-                              <img
-                                src={post.image_url || "/placeholder.svg?height=200&width=300"}
-                                alt={post.title}
-                                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement
-                                  target.src =
-                                    "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=267&fit=crop&crop=center&auto=format&q=80"
-                                }}
-                              />
-                            </div>
-                            <div className="p-4">
-                              <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-2">
-                                <Calendar className="w-3 h-3" />
-                                <span>{formatDate(post.created_at)}</span>
-                              </div>
-                              <h4 className="font-semibold text-sm text-gray-800 leading-snug group-hover:text-green-700 transition-colors line-clamp-2">
-                                {post.title}
-                              </h4>
-                            </div>
-                          </Link>
-                        </motion.div>
-                      ))}
+                  {/* Post Info */}
+                  <div>
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">About This Post</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2.5 text-sm text-gray-500">
+                        <Calendar className="w-4 h-4 text-gray-400" />
+                        <span>{formatDate(blog.created_at)}</span>
+                      </div>
+                      <div className="flex items-center gap-2.5 text-sm text-gray-500">
+                        <Clock className="w-4 h-4 text-gray-400" />
+                        <span>{getEstimatedReadTime(blog.content)} min read</span>
+                      </div>
+                      <div className="flex items-center gap-2.5 text-sm text-gray-500">
+                        <Eye className="w-4 h-4 text-gray-400" />
+                        <span>1.2k views</span>
+                      </div>
+                      <div className="mt-1">
+                        <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-green-50 text-green-700">
+                          {blog.category}
+                        </span>
+                      </div>
                     </div>
-                  ) : (
-                    <p className="text-sm text-gray-400">No related articles yet.</p>
+                  </div>
+
+                  {/* Tags */}
+                  {blog.tags && blog.tags.length > 0 && (
+                    <div className="pt-6 border-t border-gray-100">
+                      <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Tags</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {blog.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-50 text-gray-600 border border-gray-100"
+                          >
+                            <Tag className="w-3 h-3 mr-1" />
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   )}
 
-                  {/* Browse all link */}
-                  <div className="mt-6 pt-5 border-t border-gray-100">
+                  {/* Share */}
+                  <div className="pt-6 border-t border-gray-100">
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Share</h3>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleShare("twitter")}
+                        className="p-2.5 rounded-lg bg-gray-50 text-gray-500 hover:bg-blue-50 hover:text-blue-500 transition-colors"
+                      >
+                        <Twitter className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("facebook")}
+                        className="p-2.5 rounded-lg bg-gray-50 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      >
+                        <Facebook className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("linkedin")}
+                        className="p-2.5 rounded-lg bg-gray-50 text-gray-500 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                      >
+                        <Linkedin className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleShare()}
+                        className="p-2.5 rounded-lg bg-gray-50 text-gray-500 hover:bg-green-50 hover:text-green-600 transition-colors"
+                      >
+                        {shareSuccess ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Related Articles */}
+                  {relatedPosts.length > 0 && (
+                    <div className="pt-6 border-t border-gray-100">
+                      <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Related Articles</h3>
+                      <div className="space-y-4">
+                        {relatedPosts.map((post, index) => (
+                          <motion.div
+                            key={post.id}
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1 * index + 0.3 }}
+                          >
+                            <Link
+                              to={`/blog/${post.slug}`}
+                              className="group block rounded-xl border border-gray-100 overflow-hidden hover:shadow-sm transition-all duration-300"
+                            >
+                              <div className="relative overflow-hidden" style={{ aspectRatio: "3/2" }}>
+                                <img
+                                  src={post.image_url || "/placeholder.svg?height=200&width=300"}
+                                  alt={post.title}
+                                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement
+                                    target.src =
+                                      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=267&fit=crop&crop=center&auto=format&q=80"
+                                  }}
+                                />
+                              </div>
+                              <div className="p-3.5">
+                                <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-1.5">
+                                  <Calendar className="w-3 h-3" />
+                                  <span>{formatDate(post.created_at)}</span>
+                                </div>
+                                <h4 className="font-semibold text-sm text-gray-800 leading-snug group-hover:text-green-700 transition-colors line-clamp-2">
+                                  {post.title}
+                                </h4>
+                              </div>
+                            </Link>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Browse all */}
+                  <div className="pt-6 border-t border-gray-100">
                     <Link
                       to="/blog"
                       className="flex items-center gap-1.5 text-sm font-medium text-green-700 hover:text-green-800 transition-colors"
@@ -456,6 +530,7 @@ const BlogPost = () => {
                       <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
+
                 </div>
               </motion.aside>
             </div>

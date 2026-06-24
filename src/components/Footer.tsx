@@ -116,14 +116,14 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-sm text-gray-400 font-semibold uppercase tracking-wider">
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link to="/contact" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <span>|</span>
-            <Link to="/contact" className="hover:text-white transition-colors">Terms & Conditions</Link>
-            <span>|</span>
-            <Link to="/contact" className="hover:text-white transition-colors">Medical Disclaimer</Link>
-            <span>|</span>
-            <Link to="/contact" className="hover:text-white transition-colors">Website Disclaimer</Link>
+          <div className="flex flex-wrap gap-4 justify-center text-center">
+            <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <span className="hidden sm:inline">|</span>
+            <Link to="/terms-conditions" className="hover:text-white transition-colors">Terms & Conditions</Link>
+            <span className="hidden sm:inline">|</span>
+            <Link to="/medical-disclaimer" className="hover:text-white transition-colors">Medical Disclaimer</Link>
+            <span className="hidden md:inline">|</span>
+            <Link to="/website-disclaimer" className="hover:text-white transition-colors">Website Disclaimer</Link>
           </div>
 
           <div className="text-xs text-gray-400 font-semibold">
