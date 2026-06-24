@@ -45,3 +45,29 @@
       font-size: 16px !important; /* Prevent iOS zoom on focus */
     }
   }
+
+  /* Infinite Marquee Scrolling */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 45s linear infinite;
+  }
+
+  /* Hide scrollbars but allow scrolling */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+

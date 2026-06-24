@@ -78,7 +78,7 @@ const steps = [
 
 const RecoveryJourney = () => {
   return (
-    <section className="py-24 bg-[#faf8f4] relative overflow-hidden">
+    <section className="py-24 bg-amber-100 relative overflow-hidden">
 
       {/* Subtle organic light accent blobs */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-green-100/30 rounded-full blur-[120px] pointer-events-none"></div>
@@ -100,7 +100,7 @@ const RecoveryJourney = () => {
                   <span>Our Recovery Pathway</span>
                 </div>
 
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#042014] tracking-normal leading-[1.1] instrument-font italic">
+                <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold text-[#042014] tracking-normal leading-[1.1] instrument-font italic">
                   How we guide <br className="hidden lg:inline" />
                   your recovery?
                 </h2>
@@ -127,8 +127,11 @@ const RecoveryJourney = () => {
 
               <div className="pt-4 hidden lg:block">
                 <div className="w-16 h-[2px] bg-[#042014]/20"></div>
-                <p className="text-xs uppercase tracking-widest font-black text-[#042014]/40 mt-4">
+                <p className="text-md uppercase tracking-widest font-bold text-black mt-4">
                   The Applied Physio
+                </p>
+                <p className="text-sm text-[#042014] mt-2">
+                  Best Physio Therapy in Durgapur
                 </p>
               </div>
 
