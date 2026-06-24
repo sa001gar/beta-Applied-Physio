@@ -179,8 +179,10 @@ const BlogPost = () => {
         />
       </div>
 
-      <main className="pt-24 min-h-screen bg-white">
-        <Breadcrumb pageName={blog.title} />
+      <main className="pt-32 min-h-screen bg-white">
+        <div className="container mx-auto px-4 md:px-8">
+          <Breadcrumb pageName={blog.title} />
+        </div>
 
         <article className="py-8">
           <div className="container mx-auto">

@@ -23,12 +23,12 @@ const Breadcrumb = ({ pageName, theme = 'light' }: BreadcrumbProps) => {
 
   return (
     <div className="w-full pb-6 z-20 relative">
-      <nav className="flex text-sm" aria-label="Breadcrumb">
-        <ol className="inline-flex items-center space-x-1 md:space-x-2">
-          <li className="inline-flex items-center">
+      <nav className="flex text-xs md:text-sm" aria-label="Breadcrumb">
+        <ol className="flex flex-wrap items-center gap-1 md:gap-2">
+          <li className="flex items-center">
             <Link to="/" className={`inline-flex items-center transition-colors ${textSecondary}`}>
-              <Home className="w-4 h-4 mr-1.5" />
-              Home
+              <Home className="w-3.5 h-3.5 mr-1 md:mr-1.5 flex-shrink-0" />
+              <span>Home</span>
             </Link>
           </li>
           {pathSegments.map((segment, index) => {
@@ -36,23 +36,24 @@ const Breadcrumb = ({ pageName, theme = 'light' }: BreadcrumbProps) => {
             const isLast = index === pathSegments.length - 1;
 
             return (
-               <li key={path}>
-                <div className="flex items-center">
-                  <ChevronRight className={`w-4 h-4 mx-1 md:mx-2 ${iconColor}`} />
+               <li key={path} className="flex items-center min-w-0">
+                  <ChevronRight className={`w-3.5 h-3.5 flex-shrink-0 ${iconColor}`} />
                   {isLast ? (
-                    <span className={`font-semibold capitalize ${textPrimary}`}>
+                    <span 
+                      className={`font-semibold capitalize ${textPrimary} truncate max-w-[120px] sm:max-w-[250px] md:max-w-[450px] lg:max-w-[700px] xl:max-w-none inline-block align-middle`}
+                      title={pageName || segment.replace(/-/g, ' ')}
+                    >
                       {pageName || segment.replace(/-/g, ' ')}
                     </span>
                   ) : (
                     <Link
                       to={path}
-                      className={`transition-colors capitalize ${textSecondary}`}
+                      className={`transition-colors capitalize ${textSecondary} truncate max-w-[100px] sm:max-w-none inline-block align-middle`}
                     >
                       {segment.replace(/-/g, ' ')}
                     </Link>
                   )}
-                </div>
-              </li>
+                </li>
             );
           })}
         </ol>
