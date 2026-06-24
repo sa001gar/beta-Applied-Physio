@@ -20,12 +20,12 @@ const Navbar = () => {
   const getLinkClass = (path: string, exact = true) => {
     const isActive = exact ? location.pathname === path : location.pathname.startsWith(path);
     if (isActive) {
-      return useLightText 
-        ? 'text-emerald-300 border-b-[2.5px] border-emerald-300 pb-1' 
+      return useLightText
+        ? 'text-emerald-300 border-b-[2.5px] border-emerald-300 pb-1'
         : 'text-green-600 border-b-[2.5px] border-green-600 pb-1';
     } else {
-      return useLightText 
-        ? 'text-white/95 border-b-[2.5px] border-transparent pb-1 hover:text-emerald-300' 
+      return useLightText
+        ? 'text-white/95 border-b-[2.5px] border-transparent pb-1 hover:text-emerald-300'
         : 'text-gray-700 border-b-[2.5px] border-transparent pb-1 hover:text-green-600';
     }
   };
@@ -69,9 +69,6 @@ const Navbar = () => {
     }, 200);
   };
 
-  // Group services for a 2-column mega menu layout
-  const leftServices = services.slice(0, 6);
-  const rightServices = services.slice(6);
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled
@@ -82,13 +79,13 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity -m-2">
-            <img 
-              src="/images/layout/logo_final.png" 
-              alt="logo" 
-              width={260} 
-              height={50} 
-              className={`ml-2 transition-all duration-300 ${useLightText ? 'brightness-0 invert' : ''}`} 
+          <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity -my-1">
+            <img
+              src="/images/layout/logo_final.png"
+              alt="logo"
+              width={260}
+              height={50}
+              className={`transition-all duration-300 ${useLightText ? 'brightness-0 invert' : ''}`}
             />
           </Link>
 
@@ -117,16 +114,14 @@ const Navbar = () => {
             >
               <Link
                 to="/services"
-                className={`flex items-center text-base font-semibold transition-colors gap-1 ${
-                  location.pathname.startsWith('/services')
-                    ? (useLightText ? 'text-emerald-300' : 'text-green-600')
-                    : (useLightText ? 'text-white/95 hover:text-emerald-300' : 'text-gray-700 hover:text-green-600')
-                }`}
+                className={`flex items-center text-base font-semibold transition-colors gap-1 ${location.pathname.startsWith('/services')
+                  ? (useLightText ? 'text-emerald-300' : 'text-green-600')
+                  : (useLightText ? 'text-white/95 hover:text-emerald-300' : 'text-gray-700 hover:text-green-600')
+                  }`}
               >
                 <span>Services</span>
-                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                  activeDropdown === 'services' ? 'rotate-180' : ''
-                } ${useLightText ? 'text-white/60' : 'text-gray-400'}`} />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === 'services' ? 'rotate-180' : ''
+                  } ${useLightText ? 'text-white/60' : 'text-gray-400'}`} />
               </Link>
 
               {/* Mega Dropdown */}
@@ -194,11 +189,10 @@ const Navbar = () => {
           <div className="hidden lg:flex flex-row gap-3 items-center">
             <a
               href="tel:+919808163749"
-              className={`px-5 py-2.5 border rounded-lg transition-all duration-300 font-bold flex items-center space-x-2 transform hover:-translate-y-0.5 text-base ${
-                useLightText
-                  ? 'text-white border-white/30 hover:border-emerald-300 hover:bg-white/10'
-                  : 'text-green-700 border-green-600/40 hover:border-green-600 hover:bg-green-50/20'
-              }`}
+              className={`px-5 py-2.5 border rounded-lg transition-all duration-300 font-bold flex items-center space-x-2 transform hover:-translate-y-0.5 text-base ${useLightText
+                ? 'text-white border-white/30 hover:border-emerald-300 hover:bg-white/10'
+                : 'text-green-700 border-green-600/40 hover:border-green-600 hover:bg-green-50/20'
+                }`}
             >
               <Phone className={`w-3.5 h-3.5 transition-colors ${useLightText ? 'text-emerald-300' : 'text-green-600'}`} />
               <span>+91 98081 63749</span>
@@ -213,11 +207,10 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className={`lg:hidden transition-colors p-2 rounded-lg ${
-              useLightText
-                ? 'text-white hover:text-emerald-300 hover:bg-white/5'
-                : 'text-gray-700 hover:text-green-700 hover:bg-gray-100'
-            }`}
+            className={`lg:hidden transition-colors p-2 rounded-lg ${useLightText
+              ? 'text-white hover:text-emerald-300 hover:bg-white/5'
+              : 'text-gray-700 hover:text-green-700 hover:bg-gray-100'
+              }`}
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >

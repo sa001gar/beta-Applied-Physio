@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 const conditions = [
   { name: 'Back Pain', image: '/images/landing/conditions/back-pain.png' },
@@ -54,17 +54,6 @@ const ConditionsWeTreat = () => {
                 />
               </div>
 
-              <div className="mt-8 hidden lg:block">
-                <Link
-                  to="/services"
-                  className="inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white px-7 py-3.5 rounded-lg font-bold shadow-md hover:shadow-green-600/10 transition-all duration-300 transform hover:-translate-y-0.5"
-                >
-                  <span>View All Conditions</span>
-                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </Link>
-              </div>
             </motion.div>
           </div>
 
@@ -96,18 +85,6 @@ const ConditionsWeTreat = () => {
               })}
             </div>
 
-            {/* Mobile/Tablet button fallback */}
-            <div className="mt-8 text-center lg:hidden">
-              <Link
-                to="/services"
-                className="inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white px-7 py-3.5 rounded-lg font-bold shadow-md hover:shadow-green-600/10 transition-all duration-300 transform hover:-translate-y-0.5"
-              >
-                <span>View All Conditions</span>
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
           </div>
         </div>
       </div>

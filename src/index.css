@@ -70,4 +70,45 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Progress Bar Animations */
+  @keyframes progress-fill {
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  .animate-progress-fill {
+    animation: progress-fill 1.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+  }
+
+  @keyframes progress-loop {
+    0% {
+      left: -33%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  .animate-progress-loop {
+    position: absolute;
+    animation: progress-loop 1.2s infinite linear;
+  }
+
+  @keyframes splash-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  .animate-splash-fade-out {
+    animation: splash-fade-out 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
 

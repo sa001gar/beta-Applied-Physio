@@ -1,12 +1,89 @@
-import { useState, useEffect } from 'react';
-import { X, CheckCircle, Calendar, MapPin, Phone, Mail, MessageSquare } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { X, CheckCircle, Calendar, MapPin, Phone, Mail, MessageSquare, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
 interface BookNowProps {
   isOpen: boolean;
   onClose: () => void;
   defaultService?: string;
 }
+
+const CustomDropdown = ({ 
+  options, 
+  value, 
+  onChange, 
+  placeholder, 
+  icon: Icon 
+}: { 
+  options: string[]; 
+  value: string; 
+  onChange: (val: string) => void; 
+  placeholder: string; 
+  icon: any; 
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full flex items-center justify-between pl-10 pr-4 py-3 rounded-lg border transition-all duration-200 bg-white text-left ${
+          isOpen ? 'border-green-500 ring-2 ring-green-500/20' : 'border-gray-300 hover:border-green-400'
+        }`}
+      >
+        <div className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${isOpen ? 'text-green-500' : 'text-gray-400'}`}>
+          <Icon className="h-5 w-5" />
+        </div>
+        <span className={value ? 'text-gray-900 font-medium' : 'text-gray-500'}>
+          {value || placeholder}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
+            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+            exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden origin-top"
+          >
+            <div className="max-h-60 overflow-y-auto py-2 custom-scrollbar">
+              {options.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => {
+                    onChange(option);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-green-50 ${
+                    value === option ? 'bg-green-50 text-green-700 font-semibold' : 'text-gray-700 font-medium'
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
   const [formData, setFormData] = useState({
@@ -39,6 +116,17 @@ const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Form validation
+    if (!formData.service) {
+      alert("Please select a service.");
+      return;
+    }
+    if (!formData.location) {
+      alert("Please select a preferred location.");
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -81,7 +169,7 @@ const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -89,235 +177,244 @@ const BookNow = ({ isOpen, onClose, defaultService }: BookNowProps) => {
     }));
   };
 
-  if (!isOpen) return null;
+  const handleDropdownChange = (name: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
-  return (
+  // We use createPortal to render the modal at the document root,
+  // preventing parent components (like Navbar with backdrop-filter) from clipping or breaking fixed positioning.
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative overflow-hidden"
+      {isOpen && (
+        <motion.div 
+          key="book-now-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-[#042014]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
         >
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-green-100 rounded-bl-full opacity-30" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-100 rounded-tr-full opacity-30" />
-          <div className="absolute -bottom-6 -right-6 w-16 h-16 bg-yellow-100 rounded-full opacity-30" />
-          
-          {showSuccess ? (
-            <div className="p-8 text-center relative z-10">
-              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
-                <CheckCircle className="h-10 w-10 text-green-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Booking Confirmed!</h3>
-              <p className="text-gray-600 mb-6">
-                Thank you for choosing Applied Physio. We'll get back to you shortly to confirm your appointment.
-              </p>
-              
-              {/* Success illustration */}
-              <div className="max-w-xs mx-auto mb-6">
-                <svg viewBox="0 0 200 150" className="w-full">
-                  <rect x="40" y="50" width="120" height="80" rx="10" fill="#E6F7ED" />
-                  <circle cx="100" cy="90" r="25" fill="#84D6AC" />
-                  <path d="M90 90 L100 100 L115 80" stroke="#FFFFFF" strokeWidth="5" strokeLinecap="round" fill="none" />
-                  <path d="M20 120 C40 130, 160 130, 180 120" stroke="#84D6AC" strokeWidth="2" fill="none" />
-                </svg>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="flex justify-between items-center p-6 border-b relative z-10">
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <Calendar className="mr-2 text-green-600 h-6 w-6" />
-                  Book an Appointment
-                </h2>
-                <button
-                  onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+            className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl relative overflow-visible my-auto"
+          >
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-green-100 rounded-bl-[4rem] rounded-tr-[2rem] opacity-50 overflow-hidden pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-50 rounded-tr-[4rem] rounded-bl-[2rem] opacity-50 overflow-hidden pointer-events-none" />
+            
+            {showSuccess ? (
+              <div className="p-10 text-center relative z-10">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", bounce: 0.5 }}
+                  className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-green-50 mb-6 border-4 border-green-100"
                 >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              <div className="max-h-[70vh] overflow-y-auto px-6 pb-6 custom-scrollbar">
-                {/* Form illustration */}
-                <div className="my-6 text-center">
-                  <svg className="w-32 h-32 mx-auto" viewBox="0 0 200 200">
-                    <circle cx="100" cy="100" r="80" fill="#E6F7ED" />
-                    <rect x="70" y="60" width="60" height="80" rx="4" fill="#FFFFFF" stroke="#84D6AC" strokeWidth="2" />
-                    <line x1="80" y1="80" x2="120" y2="80" stroke="#84D6AC" strokeWidth="2" />
-                    <line x1="80" y1="90" x2="120" y2="90" stroke="#84D6AC" strokeWidth="2" />
-                    <line x1="80" y1="100" x2="110" y2="100" stroke="#84D6AC" strokeWidth="2" />
-                    <circle cx="130" cy="110" r="25" fill="#84D6AC" opacity="0.6" />
-                    <path d="M50 130 C70 150, 130 150, 150 130" stroke="#84D6AC" strokeWidth="2" fill="none" />
+                  <CheckCircle className="h-12 w-12 text-green-600" />
+                </motion.div>
+                <h3 className="text-3xl font-bold text-[#042014] mb-4 font-serif">Booking Confirmed!</h3>
+                <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg leading-relaxed">
+                  Thank you for choosing Applied Physio. We'll get back to you shortly to confirm your appointment.
+                </p>
+                
+                {/* Success illustration */}
+                <div className="max-w-xs mx-auto mb-2 opacity-90">
+                  <svg viewBox="0 0 200 150" className="w-full">
+                    <rect x="40" y="50" width="120" height="80" rx="16" fill="#f0fdf4" />
+                    <circle cx="100" cy="90" r="25" fill="#10b981" />
+                    <path d="M90 90 L100 100 L115 80" stroke="#FFFFFF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    <path d="M20 120 C40 130, 160 130, 180 120" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" fill="none" />
                   </svg>
                 </div>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="group">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleChange}
-                          required
-                          className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                        />
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-500">
-                          <Mail className="h-5 w-5" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="group">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                      <div className="relative">
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          required
-                          className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                        />
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-500">
-                          <Mail className="h-5 w-5" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="group">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                      <div className="relative">
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          required
-                          className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                        />
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-500">
-                          <Phone className="h-5 w-5" />
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Service</label>
-                      <select
-                        name="service"
-                        value={formData.service}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-all duration-200"
-                      >
-                        <option value="">Select a service</option>
-                        <option value="Manual Therapy">Manual Therapy</option>
-                        <option value="Sports Rehabilitation">Sports Rehabilitation</option>
-                        <option value="Physical Therapy">Physical Therapy</option>
-                        <option value="Ergonomic Care">Ergonomic Care</option>
-                        <option value="Neurological Rehabilitation">Neurological Rehabilitation</option>
-                        <option value="Pediatric Physiotherapy">Pediatric Physiotherapy</option>
-                        <option value="Geriatric Care">Geriatric Care</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="group">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Location</label>
-                    <div className="relative">
-                      <select
-                        name="location"
-                        value={formData.location}
-                        onChange={handleChange}
-                        required
-                        className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-all duration-200"
-                      >
-                        <option value="">Select a location</option>
-                        <option value="Main Clinic">Main Clinic - Benachity</option>
-                        <option value="Branch Office">Branch Office - Near NIT</option>
-                      </select>
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-500">
-                        <MapPin className="h-5 w-5" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="group">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                    <div className="relative">
-                      <textarea
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        rows={4}
-                        required
-                        className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                        placeholder="Please describe your condition or any specific requirements..."
-                      ></textarea>
-                      <div className="absolute left-3 top-6 text-gray-400 group-focus-within:text-green-500">
-                        <MessageSquare className="h-5 w-5" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end gap-4 pt-4">
-                    <button
-                      type="button"
-                      onClick={onClose}
-                      className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 font-medium flex items-center"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Booking...
-                        </>
-                      ) : (
-                        'Book Appointment'
-                      )}
-                    </button>
-                  </div>
-                </form>
               </div>
-            </>
-          )}
+            ) : (
+              <>
+                <div className="flex justify-between items-center p-6 md:px-8 md:py-6 border-b border-gray-100 relative z-10 bg-white/50 backdrop-blur-sm rounded-t-[2rem]">
+                  <h2 className="text-2xl md:text-3xl font-semibold text-[#042014] flex items-center font-serif">
+                    <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center mr-3 border border-green-100">
+                      <Calendar className="text-green-600 h-5 w-5" />
+                    </div>
+                    Book Appointment
+                  </h2>
+                  <button
+                    onClick={onClose}
+                    className="text-gray-400 hover:text-[#042014] hover:bg-gray-100 transition-all p-2.5 rounded-full"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="max-h-[75vh] overflow-y-auto p-6 md:p-8 custom-scrollbar relative z-10">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="John Doe"
+                            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 hover:border-green-400 transition-all duration-200 outline-none font-medium"
+                          />
+                          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-500 transition-colors">
+                            <Mail className="h-5 w-5" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                        <div className="relative">
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="john@example.com"
+                            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 hover:border-green-400 transition-all duration-200 outline-none font-medium"
+                          />
+                          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-500 transition-colors">
+                            <Mail className="h-5 w-5" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                        <div className="relative">
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            required
+                            placeholder="+91 98081 63749"
+                            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 hover:border-green-400 transition-all duration-200 outline-none font-medium"
+                          />
+                          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-500 transition-colors">
+                            <Phone className="h-5 w-5" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="group">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Select Service</label>
+                        <CustomDropdown
+                          options={[
+                            "Manual Therapy",
+                            "Sports Rehabilitation",
+                            "Physical Therapy",
+                            "Ergonomic Care",
+                            "Neurological Rehabilitation",
+                            "Pediatric Physiotherapy",
+                            "Geriatric Care"
+                          ]}
+                          value={formData.service}
+                          onChange={(val) => handleDropdownChange('service', val)}
+                          placeholder="Choose a service"
+                          icon={CheckCircle}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="group">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Preferred Location</label>
+                      <CustomDropdown
+                        options={[
+                          "Main Clinic - Benachity",
+                          "Branch Office - Near NIT"
+                        ]}
+                        value={formData.location}
+                        onChange={(val) => handleDropdownChange('location', val)}
+                        placeholder="Choose a location"
+                        icon={MapPin}
+                      />
+                    </div>
+
+                    <div className="group">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">How can we help you?</label>
+                      <div className="relative">
+                        <textarea
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
+                          rows={4}
+                          required
+                          className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 hover:border-green-400 transition-all duration-200 outline-none font-medium resize-none"
+                          placeholder="Please describe your condition or any specific requirements..."
+                        ></textarea>
+                        <div className="absolute left-3 top-4 text-gray-400 group-focus-within:text-green-500 transition-colors">
+                          <MessageSquare className="h-5 w-5" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                      <button
+                        type="button"
+                        onClick={onClose}
+                        className="px-6 py-3.5 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 text-gray-700 transition-all font-semibold"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-8 py-3.5 bg-green-600 text-white rounded-xl shadow-[0_8px_20px_rgba(22,163,74,0.2)] hover:bg-green-700 hover:shadow-[0_10px_25px_rgba(22,163,74,0.3)] transition-all disabled:opacity-70 disabled:cursor-not-allowed font-semibold flex items-center transform hover:-translate-y-0.5 active:translate-y-0"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Processing...
+                          </>
+                        ) : (
+                          'Confirm Booking'
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </>
+            )}
+          </motion.div>
         </motion.div>
-      </div>
+      )}
       
       {/* Add a global style for the scrollbar */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #c5e2d5;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #84D6AC;
-        }
-      ` }} />
-    </AnimatePresence>
+      {isOpen && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+          }
+        ` }} />
+      )}
+    </AnimatePresence>,
+    document.body
   );
 };
 
-export default BookNow;
+export default BookNow;

@@ -1,6 +1,6 @@
-import { Heart, Award, Users, Linkedin, Instagram, Facebook, Youtube, Star, CheckCircle, Target, Shield, Clock, HandHeart } from 'lucide-react';
+import { Heart, Award, Users, Star, CheckCircle, Target, Shield, Clock, HandHeart } from 'lucide-react';
 import Breadcrumb from '../components/Breadcrumb';
-import { teamMembers } from '../data';
+import OurExperts from '../components/OurExperts';
 import { motion } from 'framer-motion';
 
 const stats = [
@@ -214,68 +214,7 @@ const About = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-4 max-w-[1200px]">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-semibold instrument-font italic text-[#042014] mb-4">
-              Meet Our Specialists
-            </h2>
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Our dedicated team of experienced professionals brings together diverse specialties to provide you with the most comprehensive care possible.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] overflow-hidden group hover:shadow-[0_10px_40px_rgba(4,32,20,0.08)] transition-all duration-500"
-              >
-                <div className="relative overflow-hidden aspect-[4/5]">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#042014]/90 via-[#042014]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-4">
-                      {member.social.linkedin && (
-                        <a href={member.social.linkedin} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-emerald-500 transition-colors">
-                          <Linkedin className="w-4 h-4" />
-                        </a>
-                      )}
-                      {member.social.instagram && (
-                        <a href={member.social.instagram} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-emerald-500 transition-colors">
-                          <Instagram className="w-4 h-4" />
-                        </a>
-                      )}
-                      {member.social.facebook && (
-                        <a href={member.social.facebook} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-emerald-500 transition-colors">
-                          <Facebook className="w-4 h-4" />
-                        </a>
-                      )}
-                      {member.social.youtube && (
-                        <a href={member.social.youtube} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-emerald-500 transition-colors">
-                          <Youtube className="w-4 h-4" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-bold text-[#042014] mb-1">{member.name}</h3>
-                  <p className="text-sm font-semibold text-emerald-600 uppercase tracking-wider mb-4">{member.role}</p>
-                  <p className="text-gray-500 text-sm leading-relaxed">{member.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <OurExperts />
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-green-50 text-center px-4 border-t border-emerald-100/50">

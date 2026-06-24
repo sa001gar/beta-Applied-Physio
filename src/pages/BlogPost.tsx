@@ -142,7 +142,7 @@ const BlogPost = () => {
       <main className="pt-32 min-h-screen bg-white">
         <div className="container mx-auto">
           <div className="flex justify-center items-center h-64">
-            <Loader size="large" />
+            <Loader variant="inline" />
           </div>
         </div>
       </main>

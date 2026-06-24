@@ -114,7 +114,7 @@ const Blog = () => {
         <div className="container mx-auto">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <Loader size="large" />
+              <Loader variant="inline" />
             </div>
           ) : filteredBlogs.length === 0 ? (
             <div className="text-center py-16">

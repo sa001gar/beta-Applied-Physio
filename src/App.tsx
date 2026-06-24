@@ -47,7 +47,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen bg-white">
     <Navbar />
     <main className="flex-grow">
-      <Suspense fallback={<Loader size="large" />}>
+      <Suspense fallback={<Loader variant="progress" />}>
         {children}
       </Suspense>
     </main>
