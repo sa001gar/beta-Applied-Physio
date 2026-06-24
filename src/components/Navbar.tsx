@@ -79,7 +79,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity -my-1">
+          <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity -my-2 md:-my-1">
             <img
               src="/images/layout/logo_final.png"
               alt="logo"

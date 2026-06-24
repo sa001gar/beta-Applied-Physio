@@ -115,7 +115,7 @@ const About = () => {
               <img
                 src="https://img.freepik.com/premium-photo/chiropractor-assisting-senior-patient_482257-77377.jpg?w=826"
                 alt="Physiotherapy treatment"
-                className="relative z-10 w-full h-[500px] object-cover rounded-2xl shadow-xl border border-white"
+                className="relative z-10 w-full h-[280px] sm:h-[400px] md:h-[500px] object-cover rounded-2xl shadow-xl border border-white"
               />
               <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-xl z-20 hidden md:block border border-emerald-50">
                 <div className="flex items-center gap-4">

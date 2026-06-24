@@ -109,15 +109,15 @@ const Services = () => {
   return (
     <section className={`pt-32 ${location.pathname === '/' ? 'py-12' : 'pt-32'} bg-gradient-to-br from-green-50 to-yellow-50`}>
       {location.pathname !== '/' && (
-        <div className="container mx-auto mb-12 text-center">
-          <h1 className="text-5xl font-bold text-green-800 mb-6">Our Services</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        <div className="container mx-auto px-4 md:px-8 mb-12 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-green-800 mb-6">Our Services</h1>
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
             Discover our comprehensive range of physiotherapy services designed to help you achieve optimal health and wellness.
           </p>
         </div>
       )}
 
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4 md:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {servicesData.map((service) => (
             <ServiceCard

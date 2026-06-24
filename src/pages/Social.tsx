@@ -7,7 +7,7 @@ const Social = () => {
     <main className="pt-24 min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
       {/* Hero Section */}
       <section className="py-16 bg-gradient-to-r from-purple-100 to-pink-100">
-        <div className="container mx-auto text-center">
+        <div className="container mx-auto px-4 md:px-8 text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -23,7 +23,7 @@ const Social = () => {
           >
             Stay connected with us and join our growing community of health enthusiasts
           </motion.p>
-
+ 
           {/* Social Links */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
             {socialLinks.map((social, index) => (
@@ -46,10 +46,10 @@ const Social = () => {
           </div>
         </div>
       </section>
-
+ 
       {/* Stats Section */}
       <section className="py-16 bg-white">
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4 md:px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Our Social Impact</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -72,10 +72,10 @@ const Social = () => {
           </div>
         </div>
       </section>
-
+ 
       {/* Social Feed */}
       <section className="py-16">
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4 md:px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Latest Updates</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {socialPosts.map((post, index) => (

@@ -57,9 +57,8 @@ const ConditionsWeTreat = () => {
             </motion.div>
           </div>
 
-          {/* Right: Grid of conditions */}
           <div className="lg:col-span-7 relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
               {conditions.map((item, index) => {
                 return (
                   <motion.div
@@ -68,16 +67,16 @@ const ConditionsWeTreat = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: index * 0.05 }}
-                    className="group bg-green-100 border border-gray-100 hover:border-green-400 p-5 md:p-6 rounded-2xl flex flex-row items-center gap-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] hover:shadow-2xl hover:shadow-green-950/10 hover:-translate-y-1.5 transition-all duration-300 cursor-default"
+                    className="group bg-green-100 border border-gray-100 hover:border-green-400 p-3 sm:p-5 md:p-6 rounded-2xl flex flex-row items-center gap-2.5 sm:gap-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] hover:shadow-2xl hover:shadow-green-950/10 hover:-translate-y-1.5 transition-all duration-300 cursor-default"
                   >
-                    <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center p-1.5 flex-shrink-0">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center p-1 flex-shrink-0">
                       <img
                         src={item.image}
                         alt={item.name}
                         className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
-                    <span className="font-extrabold text-gray-900 text-base md:text-lg leading-snug group-hover:text-green-700 transition-colors">
+                    <span className="font-extrabold text-gray-900 text-xs sm:text-base md:text-lg leading-snug group-hover:text-green-700 transition-colors">
                       {item.name}
                     </span>
                   </motion.div>
