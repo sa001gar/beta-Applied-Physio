@@ -54,8 +54,8 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity">
-            <img src="/images/layout/logo_logo.png" alt="logo" width={240} />
+          <Link to="/" className="flex items-center gap-3 group hover:opacity-95 transition-opacity -m-2">
+            <img src="/images/layout/logo_final.png" alt="logo" width={260} height={50} className='ml-2' />
           </Link>
 
           {/* Desktop Menu */}
