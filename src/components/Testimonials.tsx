@@ -39,14 +39,14 @@ const locations = [
 
 const Testimonials = () => {
   return (
-    <section className="py-24 bg-gradient-to-b from-[#faf8f4] to-[#f4fbf7] relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-[#faf8f4] to-[#f4fbf7] relative overflow-hidden">
 
       {/* Background Decorative Blobs */}
       <div className="absolute top-0 right-[-10%] w-96 h-96 bg-green-500/[0.02] rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-0 left-[-10%] w-96 h-96 bg-emerald-500/[0.02] rounded-full blur-[100px] pointer-events-none"></div>
 
       {/* Elegant Section Separator */}
-      <div className="container mx-auto px-4 lg:px-8 max-w-[1500px] mb-20">
+      <div className="container mx-auto px-4 lg:px-8 max-w-[1500px] mb-12 md:mb-20">
         <div className="relative flex items-center">
           <div className="flex-grow border-t border-[#042014]/10"></div>
           <span className="flex-shrink mx-4 text-[#042014]/25 flex items-center gap-1.5">
@@ -73,11 +73,11 @@ const Testimonials = () => {
                   <span>Google Reviews</span>
                 </div>
 
-                <h2 className="text-3xl md:text-5xl font-semibold text-[#042014] tracking-normal mb-2 instrument-font italic">
+                <h2 className="text-3xl md:text-5xl font-semibold text-[#042014] tracking-normal mb-2">
                   What Our Patients Say
                 </h2>
 
-                <p className="text-sm font-semibold text-gray-500 mb-8 leading-none">
+                <p className="text-sm font-medium text-gray-500 mb-8 leading-none">
                   Real recovery stories from verified Google reviews
                 </p>
 
@@ -89,7 +89,7 @@ const Testimonials = () => {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true, margin: "-50px" }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="bg-white border border-[#042014]/10 border-l-4 border-l-[#042014] p-6 rounded-r-2xl shadow-[0_8px_30px_rgba(4,32,20,0.015)] hover:shadow-[0_15px_40px_rgba(4,32,20,0.04)] hover:-translate-y-0.5 transition-all duration-300 cursor-default"
+                      className="bg-white border border-[#042014]/10 border-l-4 border-l-[#042014] p-4 sm:p-6 rounded-r-2xl shadow-[0_8px_30px_rgba(4,32,20,0.015)] hover:shadow-[0_15px_40px_rgba(4,32,20,0.04)] hover:-translate-y-0.5 transition-all duration-300 cursor-default"
                     >
                       {/* Stars */}
                       <div className="flex text-yellow-400 mb-3">
@@ -105,7 +105,7 @@ const Testimonials = () => {
 
                       {/* Reviewer Details */}
                       <div className="flex items-center space-x-3 border-t border-gray-100 pt-3">
-                        <div className="w-10 h-10 rounded-full bg-[#042014]/5 text-[#042014] flex items-center justify-center text-md font-bold border border-[#042014]/10">
+                        <div className="w-10 h-10 rounded-full bg-[#042014]/5 text-[#042014] flex items-center justify-center text-sm font-bold border border-[#042014]/10">
                           {t.author.charAt(0)}
                         </div>
                         <div>
@@ -138,20 +138,20 @@ const Testimonials = () => {
             </div>
 
             {/* Right Column: Serving Patients Across Durgapur */}
-            <div className="lg:col-span-6 bg-white border border-[#042014]/10 rounded-3xl p-6 md:p-8 flex flex-col justify-between shadow-[0_15px_40px_rgba(4,32,20,0.02)] hover:border-[#042014]/25 transition-all duration-300">
+            <div className="lg:col-span-6 bg-white border border-[#042014]/10 rounded-3xl p-4 sm:p-6 md:p-8 flex flex-col justify-between shadow-[0_15px_40px_rgba(4,32,20,0.02)] hover:border-[#042014]/25 transition-all duration-300">
 
               <div>
                 <div className="mb-6">
-                  <h2 className="text-2xl md:text-3xl font-bold text-[#042014] tracking-tight leading-none">
+                  <h2 className="text-2xl md:text-3xl font-semibold text-[#042014] tracking-tight leading-none">
                     Serving Patients Across Durgapur
                   </h2>
-                  <p className="text-xs font-semibold text-gray-400 mt-2">
+                  <p className="text-xs font-medium text-gray-500 mt-2">
                     Our primary clinic and active home-care service circles
                   </p>
                 </div>
 
                 {/* Interactive Map Wrapper */}
-                <div className="rounded-2xl overflow-hidden border border-[#042014]/15 shadow-inner h-80 md:h-[340px] relative mb-6">
+                <div className="rounded-2xl overflow-hidden border border-[#042014]/15 shadow-inner h-64 sm:h-80 md:h-[340px] relative mb-6">
                   <iframe
                     src="https://maps.google.com/maps?q=The%20Applied%20Physio%2C%20Benachity%2C%20Durgapur&t=&z=14&ie=UTF8&iwloc=&output=embed"
                     className="w-full h-full border-0 rounded-2xl"
@@ -167,11 +167,11 @@ const Testimonials = () => {
                   <h4 className="text-xs uppercase tracking-widest font-black text-gray-400 mb-3.5">
                     Service Areas & Neighborhoods
                   </h4>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {locations.map((loc) => (
                       <div
                         key={loc}
-                        className="flex items-center space-x-1.5 bg-[#042014]/5 border border-transparent hover:border-[#adff2f]/40 hover:bg-[#adff2f]/10 hover:text-green-800 text-[#042014] px-3.5 py-1.5 rounded-full text-md font-semibold transition-all duration-300 cursor-default"
+                        className="flex items-center space-x-1 bg-[#042014]/5 border border-transparent hover:border-[#adff2f]/40 hover:bg-[#adff2f]/10 hover:text-green-800 text-[#042014] px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 cursor-default"
                       >
                         <MapPin className="w-3.5 h-3.5 text-green-700 flex-shrink-0" />
                         <span>{loc}</span>
@@ -182,7 +182,7 @@ const Testimonials = () => {
               </div>
 
               {/* Home Visit Callout Banner */}
-              <div className="mt-8 p-5 bg-gradient-to-r from-emerald-50/50 to-green-50/30 border border-emerald-100/50 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-2xs">
+              <div className="mt-8 p-4 sm:p-5 bg-gradient-to-r from-emerald-50/50 to-green-50/30 border border-emerald-100/50 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-2xs">
                 <div>
                   <h4 className="text-lg font-bold text-[#042014] flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>

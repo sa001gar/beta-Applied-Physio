@@ -78,7 +78,7 @@ const steps = [
 
 const RecoveryJourney = () => {
   return (
-    <section className="py-24 bg-gradient-to-b from-[#042014] to-[#0b3c25] text-white relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-[#042014] to-[#0b3c25] text-white relative overflow-hidden">
 
       {/* Subtle organic light accent blobs */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-emerald-500/[0.03] rounded-full blur-[120px] pointer-events-none"></div>
@@ -138,27 +138,27 @@ const RecoveryJourney = () => {
             </div>
 
             {/* Right Column: Timeline Cards List */}
-            <div className="lg:col-span-7 relative pl-8 md:pl-16">
+            <div className="lg:col-span-7 relative pl-12 md:pl-16">
 
               {/* Vertical Timeline line */}
-              <div className="absolute top-6 bottom-6 left-[19px] md:left-[31px] w-[2px] bg-white/10 pointer-events-none"></div>
+              <div className="absolute top-6 bottom-6 left-[23px] md:left-[31px] w-[2px] bg-white/10 pointer-events-none"></div>
 
               <div className="space-y-8">
                 {steps.map((step, index) => {
                   return (
                     <motion.div
                       key={step.number}
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-100px" }}
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       className="group relative flex flex-col items-start"
                     >
                       {/* Timeline circle node */}
-                      <span className="absolute -left-[27px] md:-left-[43px] top-6 w-4 h-4 md:w-5 md:h-5 rounded-full border-4 border-emerald-800 bg-[#042014] z-10 transition-colors duration-300 group-hover:bg-[#adff2f] group-hover:border-[#adff2f]"></span>
+                      <span className="absolute -left-[32px] md:-left-[42px] top-6 w-4 h-4 md:w-5 md:h-5 rounded-full border-4 border-emerald-800 bg-[#042014] z-10 transition-colors duration-300 group-hover:bg-[#adff2f] group-hover:border-[#adff2f]"></span>
 
                       {/* Card Content */}
-                      <div className="w-full bg-[#0b3c25]/45 hover:bg-[#0b3c25]/75 border border-emerald-800/40 rounded-3xl p-6 md:p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300 select-default">
+                      <div className="w-full bg-[#0b3c25]/45 hover:bg-[#0b3c25]/75 border border-emerald-800/40 rounded-3xl p-4 sm:p-6 md:p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300 select-default">
 
                         {/* Illustration Container */}
                         <div className="mb-4">

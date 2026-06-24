@@ -15,7 +15,7 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative pt-32 pb-12 bg-gradient-to-r from-[#f0fdf4] via-[#fefce8]/60 to-[#f0fdf4] overflow-hidden">
+    <section className="relative pt-24 md:pt-32 pb-12 bg-gradient-to-r from-[#f0fdf4] via-[#fefce8]/60 to-[#f0fdf4] overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8 max-w-[1500px]">
         <div className="grid lg:grid-cols-12 gap-10 items-center">
 
@@ -28,13 +28,13 @@ const Hero = () => {
             </div>
 
             {/* Custom font and typography */}
-            <h1 className="text-5xl md:text-6xl font-medium text-gray-900 leading-relaxed instrument-font italic">
-              Expert Physiotherapy <br className="hidden md:inline" />
+            <h1 className="text-[2.8rem] md:text-6xl font-medium text-gray-900 leading-relaxed instrument-font italic">
+              Expert Physiotherapy <br />
               <span className="text-green-600">Care in Durgapur</span>
             </h1>
 
             {/* Subtitle list */}
-            <p className="text-xs md:text-sm uppercase font-bold text-green-800 tracking-wide bg-green-100 rounded-full py-2 px-4 w-fit">
+            <p className="text-xs md:text-sm uppercase font-bold text-green-800 tracking-wide bg-green-100 rounded-xl sm:rounded-full py-2 px-4 w-fit">
               Pain Relief • Rehabilitation • Sports Injury Recovery • Neurological Physiotherapy
             </p>
 
@@ -43,21 +43,21 @@ const Hero = () => {
             </p>
 
             {/* Three feature icons */}
-            <div className="grid grid-cols-3 gap-2 py-2">
-              <div className="flex items-center space-x-2 text-xs md:text-sm font-semibold text-gray-700">
-                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 py-2">
+              <div className="flex items-center space-x-2 text-xs sm:text-sm font-semibold text-gray-700">
+                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 flex-shrink-0">
                   <Users className="w-4 h-4" />
                 </div>
                 <span>Experienced Therapists</span>
               </div>
-              <div className="flex items-center space-x-2 text-xs md:text-sm font-semibold text-gray-700">
-                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+              <div className="flex items-center space-x-2 text-xs sm:text-sm font-semibold text-gray-700">
+                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 flex-shrink-0">
                   <Shield className="w-4 h-4" />
                 </div>
                 <span>Advanced Equipment</span>
               </div>
-              <div className="flex items-center space-x-2 text-xs md:text-sm font-semibold text-gray-700">
-                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+              <div className="flex items-center space-x-2 text-xs sm:text-sm font-semibold text-gray-700">
+                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 flex-shrink-0">
                   <Heart className="w-4 h-4" />
                 </div>
                 <span>Personalized Care</span>
@@ -116,7 +116,7 @@ const Hero = () => {
               />
 
               {/* Floating Stats Panel */}
-              <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md border border-gray-100 p-4 rounded-xl shadow-lg w-56 z-20 hover:scale-102 transition-transform duration-300">
+              <div className="hidden sm:block absolute bottom-4 right-4 bg-white/95 backdrop-blur-md border border-gray-100 p-4 rounded-xl shadow-lg w-56 z-20 hover:scale-102 transition-transform duration-300">
                 <h3 className="text-2xl font-bold text-green-700 leading-none">15+</h3>
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-1 leading-tight">Years of Excellence in Physiotherapy</p>
                 <div className="mt-3 border-t border-gray-100 pt-3 space-y-2">

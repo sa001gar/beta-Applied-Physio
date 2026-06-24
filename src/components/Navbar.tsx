@@ -85,7 +85,7 @@ const Navbar = () => {
               alt="logo"
               width={260}
               height={50}
-              className={`transition-all duration-300 ${useLightText ? 'brightness-0 invert' : ''}`}
+              className={`w-[220px] md:w-[260px] h-auto transition-all duration-300 ${useLightText ? 'brightness-0 invert' : ''}`}
             />
           </Link>
 
